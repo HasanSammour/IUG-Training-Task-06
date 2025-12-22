@@ -13,53 +13,7 @@
     
     <!-- Custom Animations CSS -->
     <link href="{{ asset('bootstrap/css/animations.css') }}" rel="stylesheet">
-
-    <!-- Page-specific styles (minimal) -->
-    <style>
-        /* I Only keep unique styles here, animations are in animations.css */
-        .navbar-brand { font-weight: bold; }
-        .btn { transition: all 0.3s; }
-        .btn:hover { transform: translateY(-2px); }
-        
-        .card { 
-            border: none; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-        }
-        .card:hover { transform: translateY(-5px); }
-        
-        .table-hover tbody tr { transition: background 0.3s; }
-        .table-hover tbody tr:hover { background: rgba(0,123,255,0.1); }
-        
-        .action-btns .btn { margin: 0 3px; }
-        .price-tag { font-weight: bold; color: #28a745; }
-        
-        .form-control:focus { 
-            border-color: #80bdff;
-            box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
-        }
-        
-        .page-title {
-            border-left: 5px solid #007bff;
-            padding-left: 15px;
-            margin-bottom: 30px;
-        }
-        
-        /* Ensure footer stays at bottom */
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .container.my-4 {
-            flex: 1;
-        }
-        
-        footer {
-            margin-top: auto;
-        }
-    </style>
+    <link href="{{ asset('bootstrap/css/custom.css') }}" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->
@@ -88,6 +42,100 @@
                             <i class="fas fa-plus me-1"></i>Add Product
                         </a>
                     </li>
+                    <!-- NEW: Categories Dropdown -->
+                    <li class="nav-item dropdown position-static">
+                        <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" 
+                           data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                           aria-expanded="false">
+                            <i class="fas fa-folder me-1"></i>Categories
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg" 
+                            style="z-index: 1050; position: absolute;"
+                            aria-labelledby="categoriesDropdown">
+                            @php
+                                $categories = \App\Models\Category::withCount('products')->orderBy('name')->get();
+                            @endphp
+                            @if($categories->count() > 0)
+                                <li><h6 class="dropdown-header bg-light">
+                                    <i class="fas fa-tags me-2"></i>All Categories
+                                </h6></li>
+                                @foreach($categories as $category)
+                                    <li>
+                                        <a class="dropdown-item d-flex justify-content-between align-items-center py-2" 
+                                           href="{{ route('categories.products.show', $category->id) }}">
+                                            <div class="d-flex align-items-center">
+                                                @switch($category->name)
+                                                    @case('Electronics')
+                                                        <span class="badge bg-primary me-2 px-2 py-1">
+                                                            <i class="fas fa-laptop"></i>
+                                                        </span>
+                                                        @break
+                                                    @case('Fashion')
+                                                        <span class="badge bg-danger me-2 px-2 py-1">
+                                                            <i class="fas fa-tshirt"></i>
+                                                        </span>
+                                                        @break
+                                                    @case('Home & Garden')
+                                                        <span class="badge bg-success me-2 px-2 py-1">
+                                                            <i class="fas fa-home"></i>
+                                                        </span>
+                                                        @break
+                                                    @case('Books')
+                                                        <span class="badge bg-warning me-2 px-2 py-1">
+                                                            <i class="fas fa-book"></i>
+                                                        </span>
+                                                        @break
+                                                    @case('Sports')
+                                                        <span class="badge bg-info me-2 px-2 py-1">
+                                                            <i class="fas fa-futbol"></i>
+                                                        </span>
+                                                        @break
+                                                    @case('Health & Beauty')
+                                                        <span class="badge bg-purple me-2 px-2 py-1">
+                                                            <i class="fas fa-spa"></i>
+                                                        </span>
+                                                        @break
+                                                    @case('Toys')
+                                                        <span class="badge bg-teal me-2 px-2 py-1">
+                                                            <i class="fas fa-gamepad"></i>
+                                                        </span>
+                                                        @break
+                                                    @case('Automotive')
+                                                        <span class="badge bg-orange me-2 px-2 py-1">
+                                                            <i class="fas fa-car"></i>
+                                                        </span>
+                                                        @break
+                                                    @case('Test Empty Category')
+                                                        <span class="badge bg-secondary text-white me-2 px-2 py-1">
+                                                            <i class="fas fa-vial"></i> {{-- Test tube icon for testing --}}
+                                                        </span>
+                                                        @break
+                                                    @default
+                                                        <span class="badge bg-secondary text-white me-2 px-2 py-1">
+                                                            <i class="fas fa-tag"></i>
+                                                        </span>
+                                                @endswitch
+                                                <span>{{ $category->name }}</span>
+                                            </div>
+                                            <span class="badge bg-light text-dark rounded-pill">
+                                                {{ $category->products_count }}
+                                            </span>
+                                        </a>
+                                    </li>
+                                @endforeach
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-center text-primary fw-bold" href="{{ route('products.index') }}">
+                                        <i class="fas fa-eye me-2"></i>View All Products
+                                    </a>
+                                </li>
+                            @else
+                                <li><a class="dropdown-item text-muted" href="#">
+                                    <i class="fas fa-exclamation-circle me-2"></i>No categories found
+                                </a></li>
+                            @endif
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -108,17 +156,30 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
+
+        <!-- Breadcrumb : This section show where you are in the file Ex. (Home > Products > ...) --> 
+        @hasSection('breadcrumb')
+            <nav aria-label="breadcrumb" class="mb-3 fade-in">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                    @yield('breadcrumb')
+                </ol>
+            </nav>
+        @endif
         
         @yield('content')
     </div>
 
     <!-- Footer -->
     <footer class="text-center text-muted fade-in">
-        <div class="container">
+        <div class="container py-3">
             <p class="mb-0">
-                <i class="fas fa-code me-2"></i>Laravel Task 04 - Product Validation & Data Integrity
+                <i class="fas fa-code me-2"></i>Laravel Task 05 - Eloquent Relationships & Category Association
             </p>
-            <small>IUG University Training Project</small>
+            <small>IUG University Training Project |
+                <i class="fas fa-users me-1"></i>One-to-Many Relationships |
+                <i class="fas fa-sitemap ms-2 me-1"></i>Eager Loading
+            </small>
         </div>
     </footer>
 
@@ -127,7 +188,9 @@
     
     <!-- Custom Animations JS -->
     <script src="{{ asset('bootstrap/js/animations.js') }}"></script>
+    <script src="{{ asset('bootstrap/js/script.js') }}"></script>
+    <script src="{{ asset('bootstrap/js/delete-confirm.js') }}"></script>
     
-    @stack('scripts') <!-- For page-specific scripts > We can add it if there any in the pages that use this layout < -->
+    @stack('scripts')
 </body>
 </html>
