@@ -21,13 +21,16 @@ class StoreProductRequest extends FormRequest
      */
     public function rules(): array
     {
+        // ! Updated from Task 05
         return [
             'name' => 'required|string|max:255|unique:products,name',
-            'price' => 'required|numeric|min:0.01|max:999999.99',
-            'description' => 'nullable|string|max:1000',
+            'price' => 'required|numeric|min:0.01',
+            'description' => 'nullable|string',
+            'category_id' => 'required|exists:categories,id'
         ];
     }
 
+    // ! Updated from Task 05
     public function messages(): array
     {
         return [
@@ -38,6 +41,8 @@ class StoreProductRequest extends FormRequest
             'price.min' => 'Price must be at least $0.01',
             'price.max' => 'Price cannot exceed $999,999.99',
             'description.max' => 'Description cannot exceed 1000 characters',
+            'category_id.required' => 'Please select a category.',
+            'category_id.exists' => 'The selected category is invalid.',
         ];
     }
 }

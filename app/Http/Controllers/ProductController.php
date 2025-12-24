@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\Category;
 use App\Models\Product;
 
 class ProductController extends Controller
@@ -13,7 +14,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
+        // ! Chain Products SELECT Query with the category that has relationship with this product
+        $products = Product::with('category')->latest()->paginate(10);
         return view('products.index', compact('products'));
     }
 
@@ -22,7 +24,9 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('products.create');
+        // ! From Task 05 : Load all categories to use in create form
+        $categories =  Category::withCount('products')->orderBy('name')->paginate(5);
+        return view('products.create', compact('categories'));    
     }
 
     /**
@@ -41,7 +45,9 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        return view('products.show', compact('product'));
+        // ! From Task 05: Eager load category for Selected Product by The route
+        $product->load('category');
+        return view('products.show', compact('product'));    
     }
 
     /**
@@ -49,7 +55,9 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        return view('products.edit', compact('product'));
+        // ! From Task 05 : Load all categories to use in edit form
+        $categories = Category::orderBy('name')->get();
+        return view('products.edit', compact('product', 'categories'));    
     }
 
     /**
@@ -71,5 +79,26 @@ class ProductController extends Controller
         $product->delete();
         return redirect()->route('products.index')
                          ->with('success', 'Product deleted Successfully!');
+    }
+
+    // ! from Task05: Show products by category
+    public function showCategoryProducts(Category $category)
+    {   
+        // Get all products for this category with eager loading
+        $products = $category->products()
+            ->with('category')  // Eager load category
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);  // Paginate for better performance
+        
+        // Get category statistics
+        $categoryStats = [
+            'total_products' => $category->products_count ?? $category->products()->count(),
+            'avg_price' => $category->products()->avg('price') ?? 0,
+            'total_value' => $category->products()->sum('price') ?? 0,
+            'most_expensive' => $category->products()->max('price') ?? 0,
+            'least_expensive' => $category->products()->min('price') ?? 0,
+        ];
+        
+        return view('categories.products', compact('category', 'products', 'categoryStats'));
     }
 }

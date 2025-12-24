@@ -15,7 +15,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Seed the products table
+        // ! Updated from Task 05: Seed the DB tables
+        // Run categories first
+        $this->call(CategorySeeder::class);
+        // Then run products (which need categories)
         $this->call(ProductSeeder::class);
     }
 }

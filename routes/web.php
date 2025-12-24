@@ -9,3 +9,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Part 2: CRUD Operations
 Route::resource('products', ProductController::class);
+
+// ! from Task05: Route to show products by category 
+Route::get('/categories/{category}/products', [ProductController::class, 'showCategoryProducts'])
+->name('categories.products.show');

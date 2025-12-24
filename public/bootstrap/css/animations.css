@@ -242,22 +242,6 @@
     transform: rotateY(10deg);
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .slide-left, .slide-right {
-        animation-duration: 0.6s;
-    }
-    
-    .logo-card {
-        margin-bottom: 20px;
-        min-height: 160px;
-    }
-    
-    .stats-card:hover {
-        transform: translateY(-5px);
-    }
-}
-
 /* Additional styles for the new sections */
 .bg-gradient-warning {
     background: linear-gradient(45deg, #ffc107, #ff9800);
