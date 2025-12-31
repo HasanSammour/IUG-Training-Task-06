@@ -18,7 +18,11 @@ class DatabaseSeeder extends Seeder
         // ! Updated from Task 05: Seed the DB tables
         // Run categories first
         $this->call(CategorySeeder::class);
+        // ! From Task 06: Seed suppliers
+        $this->call(SupplierSeeder::class);
         // Then run products (which need categories)
         $this->call(ProductSeeder::class);
+        // ! From Task 06: Seed product-supplier pivot table
+        $this->call(ProductSupplierSeeder::class);
     }
 }

@@ -19,11 +19,6 @@
             <h2 class="page-title">
                 <i class="fas fa-boxes me-2"></i>Products Management
             </h2>
-            <p class="text-muted mb-0">Total Products: <strong>{{ $products->total() }}</strong> 
-                @if($products->total() > 10)
-                    | Showing: <strong>{{ $products->firstItem() }}-{{ $products->lastItem() }}</strong>
-                @endif
-            </p>
         </div>
         <a href="{{ route('products.create') }}" class="btn btn-primary add_new">
             <i class="fas fa-plus me-1"></i>Add New Product
@@ -38,36 +33,48 @@
                     <i class="fas fa-box text-primary fa-2x mb-2"></i>
                     <h3>{{ $products->total() }}</h3>
                     <p class="text-muted mb-0">Total Products</p>
+                    <small class="text-primary">
+                        Number Of products in system
+                    </small>
                 </div>
             </div>
         </div>
         <div class="col-md-3 col-6 mb-3">
             <div class="card text-center slide-in" style="animation-delay: 0.1s">
                 <div class="card-body">
-                    <i class="fas fa-dollar-sign text-success fa-2x mb-2"></i>
-                    <h3>${{ number_format($products->avg('price'), 2) }}</h3>
-                    <p class="text-muted mb-0">Avg Price</p>
+                    <i class="fas fa-truck text-warning fa-2x mb-2"></i>
+                    <h3>{{ $products->sum('suppliers_count') }}</h3>
+                    <p class="text-muted mb-0">Supplier Links</p>
+                    <small class="text-warning">
+                        Number Of Suppliers in This page
+                    </small>
                 </div>
             </div>
         </div>
         <div class="col-md-3 col-6 mb-3">
             <div class="card text-center slide-in" style="animation-delay: 0.2s">
                 <div class="card-body">
-                    <i class="fas fa-arrow-up text-warning fa-2x mb-2"></i>
-                    <h3>${{ number_format($products->max('price'), 2) }}</h3>
-                    <p class="text-muted mb-0">Highest Price</p>
+                    <i class="fas fa-dollar-sign text-success fa-2x mb-2"></i>
+                    <h3>${{ number_format($products->avg('price'), 2) }}</h3>
+                    <p class="text-muted mb-0">Avg Price</p>
+                    <small class="text-success">
+                        Average Price in This page
+                    </small>
                 </div>
             </div>
         </div>
-        <div class="col-md-3 col-6 mb-3">
-            <div class="card text-center slide-in" style="animation-delay: 0.3s">
-                <div class="card-body">
-                    <i class="fas fa-arrow-down text-info fa-2x mb-2"></i>
-                    <h3>${{ number_format($products->min('price'), 2) }}</h3>
-                    <p class="text-muted mb-0">Lowest Price</p>
-                </div>
-            </div>
+<div class="col-md-3 col-6 mb-3">
+    <div class="card text-center slide-in" style="animation-delay: 0.3s">
+        <div class="card-body">
+            <i class="fas fa-star text-warning fa-2x mb-2"></i>
+            <h3>{{ $products->max('suppliers_count') }}</h3>
+            <p class="text-muted mb-0">Most Suppliers</p>
+            <small class="text-warning">
+                Max per product
+            </small>
         </div>
+    </div>
+</div>
     </div>
     
     <!-- Quick Actions -->
@@ -79,6 +86,9 @@
                         <div>
                             <span class="badge bg-primary me-2">
                                 <i class="fas fa-filter me-1"></i>10 per page
+                            </span>
+                            <span class="badge bg-warning me-2">
+                                <i class="fas fa-truck me-1"></i>Suppliers: Many-to-Many
                             </span>
                             <span class="badge bg-info me-2">
                                 <i class="fas fa-sort me-1"></i>Sorted by Latest
@@ -121,9 +131,9 @@
                                 <th width="5%">ID</th>
                                 <th width="25%">Name</th>
                                 <th width="15%">Price</th>
-                                <th width="20%">Category</th>
-                                <th width="25%">Description</th>
-                                <th width="10%">Actions</th>
+                                <th width="15%">Category</th>
+                                <th width="25%">Suppliers</th>
+                                <th width="15%">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -161,13 +171,29 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if($product->description)
-                                        <div class="text-truncate" style="max-width: 200px;" 
-                                             title="{{ $product->description }}">
-                                            {{ Str::limit($product->description, 60) }}
+                                    @if($product->suppliers_count > 0)
+                                        <div class="suppliers-list">
+                                            @foreach($product->suppliers->take(2) as $supplier)
+                                                <span class="badge bg-warning bg-opacity-10 text-warning border border-warning mb-1 me-1 d-block" 
+                                                      style="max-width: 150px;"
+                                                      title="Cost: ${{ number_format($supplier->pivot->cost_price, 2) }} | Lead: {{ $supplier->pivot->lead_time_days }} days">
+                                                    <i class="fas fa-truck me-1"></i>
+                                                    <span class="text-truncate d-inline-block" style="max-width: 100px;">
+                                                        {{ $supplier->name }}
+                                                    </span>
+                                                </span>
+                                            @endforeach
+                                            @if($product->suppliers_count > 2)
+                                                <span class="badge bg-secondary mt-1" 
+                                                      title="And {{ $product->suppliers_count - 2 }} more suppliers">
+                                                    +{{ $product->suppliers_count - 2 }} more
+                                                </span>
+                                            @endif
                                         </div>
                                     @else
-                                        <span class="text-muted"><i>No description</i></span>
+                                        <span class="badge bg-warning bg-opacity-10 text-warning border border-warning">
+                                            <i class="fas fa-exclamation-circle me-1"></i>No Suppliers
+                                        </span>
                                     @endif
                                 </td>
                                 <td class="action-btns">
@@ -287,7 +313,8 @@
                                 <i class="fas fa-calculator me-2"></i>
                                 <strong>Page Summary:</strong>
                                 Total Value: <strong>${{ number_format($products->sum('price'), 2) }}</strong> | 
-                                Avg/Product: <strong>${{ number_format($products->avg('price'), 2) }}</strong>
+                                Avg/Product: <strong>${{ number_format($products->avg('price'), 2) }}</strong> |
+                                Total Suppliers: <strong>{{ $products->sum('suppliers_count') }}</strong>
                             </div>
                         </div>
                         <div class="col-md-4 text-md-end mt-2 mt-md-0">

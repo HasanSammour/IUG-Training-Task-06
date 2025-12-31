@@ -1,3 +1,7 @@
+{{-- ! for testing --}}
+{{-- @dd($product->suppliers)
+@dd($product->suppliers_count) --}}
+
 @extends('layouts.app')
 
 @section('title', 'Edit Product')
@@ -26,6 +30,9 @@
                                 <i class="fas fa-tag me-1"></i>{{ $product->category->name }}
                             </span>
                         @endif
+                        <span class="badge bg-warning">
+                            <i class="fas fa-truck me-1"></i>{{ $product->suppliers_count }} suppliers
+                        </span>
                     </div>
                 </div>
             </div>
@@ -177,7 +184,202 @@
                             </small>
                         </div>
                     </div>
-                    
+
+                    <!-- ========== FIXED: SUPPLIERS SECTION ========== -->
+                    <div class="mb-4 border-top pt-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-warning rounded-circle p-2 me-3">
+                                <i class="fas fa-truck text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="mb-0">
+                                    <i class="fas fa-truck me-2 text-warning"></i>Suppliers Management
+                                    <span class="text-danger">*</span>
+                                </h4>
+                                <small class="text-muted">Update supplier relationships and pricing</small>
+                            </div>
+                        </div>
+
+                        @error('suppliers')
+                            <div class="alert alert-danger">
+                                <i class="fas fa-exclamation-circle me-2"></i>{{ $message }}
+                            </div>
+                        @enderror
+
+                        <!-- Current Suppliers Summary -->
+                        @if($product->suppliers_count > 0)
+                        <div class="alert alert-warning mb-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Current Suppliers:</strong>
+                                    <span class="badge bg-warning text-dark ms-2">{{ $product->suppliers_count }}</span>
+                                </div>
+                                <small>
+                                    <i class="fas fa-sync-alt me-1"></i>
+                                    Update below to modify supplier relationships
+                                </small>
+                            </div>
+                            <div class="mt-2">
+                                @foreach($product->suppliers as $supplier)
+                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning mb-1 me-1">
+                                        <i class="fas fa-truck me-1"></i>{{ $supplier->name }}
+                                        <small class="ms-1">
+                                            (${{ number_format($supplier->pivot->cost_price, 2) }}, 
+                                            {{ $supplier->pivot->lead_time_days }} days)
+                                        </small>
+                                    </span>
+                                @endforeach
+                            </div>
+                        </div>
+                        @endif
+
+                        @if($suppliers && $suppliers->count() > 0)
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <!-- Supplier Selection Summary -->
+                                <div class="alert alert-warning mb-4">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            <strong>Selected Suppliers:</strong>
+                                            <span id="selected_count" class="badge bg-warning text-dark ms-2">0</span>
+                                        </div>
+                                        <small>
+                                            <i class="fas fa-lightbulb me-1"></i>
+                                            At least 1 supplier required
+                                        </small>
+                                    </div>
+                                    <div id="selected_suppliers_list" class="mt-2">
+                                        <small class="text-muted">No suppliers selected yet</small>
+                                    </div>
+                                </div>
+
+                                <!-- Suppliers List - Changed to same layout as create page -->
+                                <div class="suppliers-list">
+                                    @foreach($suppliers as $supplier)
+                                    @php
+                                        $currentSupplier = $product->suppliers->where('id', $supplier->id)->first();
+                                        $isSelected = old('suppliers.' . $supplier->id . '.selected') !== null ? 
+                                                      old('suppliers.' . $supplier->id . '.selected') : 
+                                                      ($currentSupplier ? true : false);
+                                        $costPrice = old('suppliers.' . $supplier->id . '.cost_price', 
+                                                      $currentSupplier ? $currentSupplier->pivot->cost_price : '0.00');
+                                        $leadTime = old('suppliers.' . $supplier->id . '.lead_time_days', 
+                                                     $currentSupplier ? $currentSupplier->pivot->lead_time_days : '0');
+                                    @endphp
+                                    <div class="supplier-item mb-3">
+                                        <div class="card border {{ $isSelected ? 'border-warning' : 'border-light' }}">
+                                            <div class="card-body p-3">
+                                                <div class="row align-items-center">
+                                                    <!-- Supplier Checkbox -->
+                                                    <div class="col-md-4">
+                                                        <div class="form-check">
+                                                            <!-- Hidden input for unchecked state -->
+                                                            <input type="hidden" name="suppliers[{{ $supplier->id }}][selected]" value="0">
+                                                            
+                                                            <input class="form-check-input supplier-checkbox" 
+                                                                   type="checkbox" 
+                                                                   id="supplier_{{ $supplier->id }}"
+                                                                   name="suppliers[{{ $supplier->id }}][selected]"
+                                                                   value="1"
+                                                                   {{ $isSelected ? 'checked' : '' }}
+                                                                   data-supplier-id="{{ $supplier->id }}">
+                                                            <label class="form-check-label" for="supplier_{{ $supplier->id }}">
+                                                                <div class="supplier-name-line">
+                                                                    <i class="fas fa-truck me-2 text-warning"></i>
+                                                                    <span class="supplier-name-text">{{ $supplier->name }}</span>
+                                                                </div>
+                                                                <div class="supplier-email-line">
+                                                                    <i class="fas fa-envelope me-1"></i>
+                                                                    <span class="supplier-email-text">{{ $supplier->email }}</span>
+                                                                </div>
+                                                            </label>
+                                                        </div>
+                                                        <!-- Hidden inputs for pivot data (always submit) -->
+                                                        <input type="hidden" name="suppliers[{{ $supplier->id }}][cost_price]" value="0">
+                                                        <input type="hidden" name="suppliers[{{ $supplier->id }}][lead_time_days]" value="0">
+                                                    </div>
+                                                    
+                                                    <!-- Cost Price Input -->
+                                                    <div class="col-md-4 supplier-details" 
+                                                         id="cost_price_details_{{ $supplier->id }}"
+                                                         style="{{ $isSelected ? '' : 'display: none;' }}">
+                                                        <label for="cost_price_{{ $supplier->id }}" class="form-label small fw-bold">
+                                                            <i class="fas fa-money-bill-wave me-1 text-success"></i>Cost Price
+                                                            <span class="text-danger">*</span>
+                                                        </label>
+                                                        <div class="input-group input-group-sm">
+                                                            <span class="input-group-text">$</span>
+                                                            <input type="number" 
+                                                                   step="0.01" 
+                                                                   min="0"
+                                                                   class="form-control form-control-sm @error('suppliers.' . $supplier->id . '.cost_price') is-invalid @enderror" 
+                                                                   id="cost_price_{{ $supplier->id }}"
+                                                                   name="suppliers[{{ $supplier->id }}][cost_price]"
+                                                                   value="{{ $costPrice }}"
+                                                                   placeholder="0.00"
+                                                                   {{ $isSelected ? '' : 'disabled' }}>
+                                                        </div>
+                                                        @error('suppliers.' . $supplier->id . '.cost_price')
+                                                            <div class="invalid-feedback d-block">
+                                                                <small><i class="fas fa-exclamation-circle me-1"></i>{{ $message }}</small>
+                                                            </div>
+                                                        @enderror
+                                                        <small class="supplier-helper-text">
+                                                            Supplier's price to you
+                                                        </small>
+                                                    </div>
+                                                    
+                                                    <!-- Lead Time Input -->
+                                                    <div class="col-md-4 supplier-details" 
+                                                         id="lead_time_details_{{ $supplier->id }}"
+                                                         style="{{ $isSelected ? '' : 'display: none;' }}">
+                                                        <label for="lead_time_{{ $supplier->id }}" class="form-label small fw-bold">
+                                                            <i class="fas fa-clock me-1 text-info"></i>Lead Time
+                                                            <span class="text-danger">*</span>
+                                                        </label>
+                                                        <div class="input-group input-group-sm">
+                                                            <input type="number" 
+                                                                   min="0"
+                                                                   max="365"
+                                                                   class="form-control form-control-sm @error('suppliers.' . $supplier->id . '.lead_time_days') is-invalid @enderror" 
+                                                                   id="lead_time_{{ $supplier->id }}"
+                                                                   name="suppliers[{{ $supplier->id }}][lead_time_days]"
+                                                                   value="{{ $leadTime }}"
+                                                                   placeholder="0"
+                                                                   {{ $isSelected ? '' : 'disabled' }}>
+                                                            <span class="input-group-text">days</span>
+                                                        </div>
+                                                        @error('suppliers.' . $supplier->id . '.lead_time_days')
+                                                            <div class="invalid-feedback d-block">
+                                                                <small><i class="fas fa-exclamation-circle me-1"></i>{{ $message }}</small>
+                                                            </div>
+                                                        @enderror
+                                                        <small class="supplier-helper-text">
+                                                            Delivery time from this supplier
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                        @else
+                        <div class="alert alert-warning">
+                            <div class="text-center py-3">
+                                <i class="fas fa-truck fa-2x mb-3"></i>
+                                <h5>No Suppliers Available</h5>
+                                <p class="text-muted">Please run the SupplierSeeder to add suppliers to the database.</p>
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                    <!-- ========== END SUPPLIERS SECTION ========== -->
+
                     <!-- Form Actions -->
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4 pt-3 border-top">
                         <a href="{{ route('products.show', $product) }}" 
@@ -189,7 +391,7 @@
                             <i class="fas fa-times me-1"></i>Cancel
                         </a>
                         <button type="submit" class="btn btn-warning" id="submitBtn">
-                            <i class="fas fa-sync-alt me-1"></i>Update Product
+                            <i class="fas fa-sync-alt me-1"></i>Update Product with Suppliers
                         </button>
                     </div>
                 </form>
@@ -220,16 +422,53 @@
                             </div>
                             <div class="col-6">
                                 <p class="mb-2">
-                                    <strong><i class="fas fa-dollar-sign me-1 text-muted"></i>Current Price</strong><br>
+                                    <strong><i class="fas fa-dollar-sign me-1 text-muted"></i>Price</strong><br>
                                     <span class="badge bg-success fs-6">${{ number_format($product->price, 2) }}</span>
                                 </p>
                                 <p class="mb-2">
-                                    <strong><i class="fas fa-calendar-check me-1 text-muted"></i>Last Updated</strong><br>
-                                    {{ $product->updated_at->format('F d, Y') }}<br>
-                                    <small class="text-muted">{{ $product->updated_at->diffForHumans() }}</small>
+                                    <strong><i class="fas fa-truck me-1 text-muted"></i>Suppliers</strong><br>
+                                    <span class="badge bg-warning fs-6">{{ $product->suppliers->count() }}</span>                                    
                                 </p>
                             </div>
                         </div>
+
+                        <!-- Display Current Suppliers List -->
+                        @if($product->suppliers && $product->suppliers->count() > 0)
+                        <div class="mt-3 pt-3 border-top">
+                            <strong><i class="fas fa-list me-1 text-muted"></i>Current Suppliers ({{ $product->suppliers->count() }}):</strong>
+                            <div class="suppliers-list-small mt-1">
+                                @foreach($product->suppliers as $supplier)
+                                @php
+                                    // Access pivot data correctly - it's stored in the original array
+                                    $pivotData = $supplier->getOriginal();
+                                    $costPrice = $pivotData['pivot_cost_price'] ?? $supplier->pivot->cost_price ?? 0;
+                                    $leadTime = $pivotData['pivot_lead_time_days'] ?? $supplier->pivot->lead_time_days ?? 0;
+                                @endphp
+                                <div class="supplier-line-small d-flex justify-content-between align-items-center mb-1">
+                                    <div class="supplier-name-small text-truncate me-2" style="max-width: 150px;">
+                                        <i class="fas fa-truck fa-xs me-1 text-warning"></i>
+                                        <small>{{ $supplier->name }}</small>
+                                    </div>
+                                    <div class="supplier-details-small text-muted">
+                                        <small>
+                                            <span class="text-success">${{ number_format($costPrice, 2) }}</span>
+                                            <span class="mx-1">•</span>
+                                            <span class="text-info">{{ $leadTime }}d</span>
+                                        </small>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        @else
+                        <div class="mt-3 pt-3 border-top">
+                            <strong><i class="fas fa-list me-1 text-muted"></i>Current Suppliers:</strong>
+                            <div class="text-muted mt-1">
+                                <small><i class="fas fa-exclamation-circle me-1"></i>No suppliers assigned to this product</small>
+                            </div>
+                        </div>
+                        @endif
+
                         <div class="mt-3">
                             <strong><i class="fas fa-history me-1 text-muted"></i>Edit History</strong><br>
                             <small class="text-muted">This product has been updated {{ $product->updated_at->diffInDays($product->created_at) }} days after creation</small>
@@ -258,12 +497,12 @@
                                 <small>All fields except description are required</small>
                             </li>
                             <li class="mb-2">
-                                <i class="fas fa-check-circle text-success me-2"></i>
-                                <small>Price must be greater than $0.01</small>
+                                <i class="fas fa-check-circle text-warning me-2"></i>
+                                <small>At least 1 supplier required</small>
                             </li>
                             <li class="mb-2">
                                 <i class="fas fa-check-circle text-success me-2"></i>
-                                <small>Category must be selected from list</small>
+                                <small>Price must be greater than $0.01</small>
                             </li>
                             <li>
                                 <i class="fas fa-check-circle text-success me-2"></i>
@@ -274,60 +513,6 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Category Comparison Card -->
-        @if($product->category)
-        <div class="card mt-4 shadow-sm slide-in" style="animation-delay: 0.2s">
-            <div class="card-header bg-gradient-primary text-white">
-                <h5 class="mb-0">
-                    <i class="fas fa-exchange-alt me-2"></i>Category Change Preview
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="row text-center">
-                    <div class="col-md-6">
-                        <div class="p-3 rounded bg-light">
-                            <h6>Current Category</h6>
-                            <div class="category-badge-large my-3 
-                                @if($product->category->name == 'Electronics') category-electronics
-                                @elseif($product->category->name == 'Fashion') category-fashion
-                                @elseif($product->category->name == 'Home & Garden') category-home
-                                @elseif($product->category->name == 'Books') category-books
-                                @elseif($product->category->name == 'Sports') category-sports
-                                @elseif($product->category->name == 'Health & Beauty') category-health
-                                @elseif($product->category->name == 'Toys') category-toys
-                                @elseif($product->category->name == 'Automotive') category-automotive
-                                @endif">
-                                <i class="fas fa-{{ getCategoryIcon($product->category->name) }} fa-2x mb-2"></i>
-                                <h5>{{ $product->category->name }}</h5>
-                            </div>
-                            <small class="text-muted">
-                                {{ $product->category->products_count ?? 0 }} products in this category
-                            </small>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="p-3 rounded bg-light">
-                            <h6>New Category</h6>
-                            <div class="category-badge-large my-3" id="newCategoryPreview">
-                                <i class="fas fa-question fa-2x mb-2 text-muted"></i>
-                                <h5 class="text-muted">Select a category</h5>
-                            </div>
-                            <small class="text-muted" id="newCategoryStats">
-                                Select a category to see details
-                            </small>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-center mt-3">
-                    <small class="text-muted">
-                        <i class="fas fa-lightbulb me-1"></i>
-                        Changing categories helps organize products better in the system
-                    </small>
-                </div>
-            </div>
-        </div>
-        @endif
     </div>
 </div>
 
@@ -339,10 +524,7 @@
         const charCount = document.getElementById('charCount');
         
         if (description && charCount) {
-            // Update count on load
             charCount.textContent = description.value.length;
-            
-            // Update count on input
             description.addEventListener('input', function() {
                 charCount.textContent = this.value.length;
                 if (this.value.length > 1000) {
@@ -353,70 +535,116 @@
             });
         }
         
-        // Form submission animation
+        // Supplier checkbox toggle - UPDATED to match create page
+        const checkboxes = document.querySelectorAll('.supplier-checkbox');
+        const selectedCount = document.getElementById('selected_count');
+        const selectedList = document.getElementById('selected_suppliers_list');
+
+        function updateSelectedSuppliers() {
+            const selected = Array.from(checkboxes).filter(cb => cb.checked);
+            selectedCount.textContent = selected.length;
+            
+            if (selected.length > 0) {
+                const names = selected.map(cb => {
+                    const nameSpan = cb.closest('.form-check').querySelector('.supplier-name-text');
+                    return nameSpan ? nameSpan.textContent.trim() : '';
+                }).filter(name => name);
+                selectedList.innerHTML = names.map(name => 
+                    `<span class="badge bg-warning text-dark me-1 mb-1">${name}</span>`
+                ).join('');
+            } else {
+                selectedList.innerHTML = '<small class="text-muted">No suppliers selected yet</small>';
+            }
+        }
+
+        // Toggle supplier details visibility and enable/disable inputs
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const supplierId = this.dataset.supplierId;
+                const costDetails = document.getElementById(`cost_price_details_${supplierId}`);
+                const leadDetails = document.getElementById(`lead_time_details_${supplierId}`);
+                const costInput = document.getElementById(`cost_price_${supplierId}`);
+                const leadInput = document.getElementById(`lead_time_${supplierId}`);
+                const card = this.closest('.card');
+                
+                if (this.checked) {
+                    if (costDetails) costDetails.style.display = 'block';
+                    if (leadDetails) leadDetails.style.display = 'block';
+                    if (costInput) costInput.disabled = false;
+                    if (leadInput) leadInput.disabled = false;
+                    if (card) {
+                        card.classList.add('border-warning');
+                        card.classList.remove('border-light');
+                    }
+                } else {
+                    if (costDetails) costDetails.style.display = 'none';
+                    if (leadDetails) leadDetails.style.display = 'none';
+                    if (costInput) costInput.disabled = true;
+                    if (leadInput) leadInput.disabled = true;
+                    if (card) {
+                        card.classList.remove('border-warning');
+                        card.classList.add('border-light');
+                    }
+                }
+                
+                updateSelectedSuppliers();
+            });
+            
+            // Trigger change event on page load if checked
+            if (checkbox.checked) {
+                checkbox.dispatchEvent(new Event('change'));
+            }
+        });
+
+        // Form submission validation
         const form = document.getElementById('editProductForm');
         const submitBtn = document.getElementById('submitBtn');
-        
+
         if (form && submitBtn) {
             form.addEventListener('submit', function(e) {
+                // Validate at least one supplier is selected
+                const selectedSuppliers = Array.from(checkboxes).filter(cb => cb.checked);
+                if (selectedSuppliers.length === 0) {
+                    e.preventDefault();
+                    alert('Please select at least one supplier.');
+                    return false;
+                }
+                    
+                // Validate all selected suppliers have valid pivot data
+                let hasErrors = false;
+                selectedSuppliers.forEach(cb => {
+                    const supplierId = cb.dataset.supplierId;
+                    const costInput = document.getElementById(`cost_price_${supplierId}`);
+                    const leadInput = document.getElementById(`lead_time_${supplierId}`);
+                    
+                    if (costInput && (!costInput.value || parseFloat(costInput.value) <= 0)) {
+                        e.preventDefault();
+                        const nameSpan = cb.closest('.form-check').querySelector('.supplier-name-text');
+                        alert(`Please enter a valid cost price for ${nameSpan ? nameSpan.textContent.trim() : 'selected supplier'}`);
+                        if (costInput) costInput.focus();
+                        hasErrors = true;
+                        return false;
+                    }
+                    
+                    if (leadInput && (!leadInput.value || parseInt(leadInput.value) < 0)) {
+                        e.preventDefault();
+                        const nameSpan = cb.closest('.form-check').querySelector('.supplier-name-text');
+                        alert(`Please enter a valid lead time for ${nameSpan ? nameSpan.textContent.trim() : 'selected supplier'}`);
+                        if (leadInput) leadInput.focus();
+                        hasErrors = true;
+                        return false;
+                    }
+                });
+                
+                if (hasErrors) return false;
+                    
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating...';
                 submitBtn.disabled = true;
             });
         }
-        
-        // Category change preview
-        const categorySelect = document.getElementById('category_id');
-        const newCategoryPreview = document.getElementById('newCategoryPreview');
-        const newCategoryStats = document.getElementById('newCategoryStats');
-        
-        if (categorySelect && newCategoryPreview && newCategoryStats) {
-            categorySelect.addEventListener('change', function() {
-                const selectedOption = this.options[this.selectedIndex];
-                const categoryName = selectedOption.text.split('\n')[0].trim();
-                const categoryId = this.value;
-                
-                // Update preview
-                const icons = {
-                    'Electronics': 'laptop',
-                    'Fashion': 'tshirt',
-                    'Home & Garden': 'home',
-                    'Books': 'book',
-                    'Sports': 'futbol',
-                    'Health & Beauty': 'spa',
-                    'Toys': 'gamepad',
-                    'Automotive': 'car'
-                };
-                
-                const icon = icons[categoryName] || 'tag';
-                const colorClass = getCategoryColorClass(categoryName);
-                
-                newCategoryPreview.innerHTML = `
-                    <i class="fas fa-${icon} fa-2x mb-2"></i>
-                    <h5>${categoryName}</h5>
-                `;
-                newCategoryPreview.className = `category-badge-large my-3 ${colorClass}`;
-                
-                // Update stats (you could fetch this via AJAX if you want real data)
-                newCategoryStats.textContent = 'Category selected';
-            });
-        }
-        
-        // Auto-focus on first field
-        document.getElementById('name').focus();
-        
-        function getCategoryColorClass(categoryName) {
-            switch(categoryName) {
-                case 'Electronics': return 'category-electronics';
-                case 'Fashion': return 'category-fashion';
-                case 'Home & Garden': return 'category-home';
-                case 'Books': return 'category-books';
-                case 'Sports': return 'category-sports';
-                case 'Health & Beauty': return 'category-health';
-                case 'Toys': return 'category-toys';
-                case 'Automotive': return 'category-automotive';
-                default: return '';
-            }
-        }
+
+        // Initialize on page load
+        updateSelectedSuppliers();
     });
 </script>
 @endpush
@@ -434,7 +662,7 @@
             case 'Health & Beauty': return 'spa';
             case 'Toys': return 'gamepad';
             case 'Automotive': return 'car';
-            case 'Test Empty Category': return 'vial'; // Test tube icon for testing
+            case 'Test Empty Category': return 'vial';
             default: return 'tag';
         }
     }

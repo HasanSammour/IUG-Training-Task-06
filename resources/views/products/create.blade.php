@@ -141,6 +141,162 @@
                         </div>
                     </div>
 
+                    <!-- ========== FIXED: SUPPLIERS SECTION ========== -->
+                    <div class="mb-4 border-top pt-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-warning rounded-circle p-2 me-3">
+                                <i class="fas fa-truck text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="mb-0">
+                                    <i class="fas fa-truck me-2 text-warning"></i>Suppliers Selection
+                                    <span class="text-danger">*</span>
+                                </h4>
+                                <small class="text-muted">Select at least one supplier and enter their pricing and lead time</small>
+                            </div>
+                        </div>
+
+                        @error('suppliers')
+                            <div class="alert alert-danger">
+                                <i class="fas fa-exclamation-circle me-2"></i>{{ $message }}
+                            </div>
+                        @enderror
+
+                        @if($suppliers && $suppliers->count() > 0)
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <!-- Supplier Selection Summary -->
+                                <div class="alert alert-warning mb-4">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            <strong>Selected Suppliers:</strong>
+                                            <span id="selected_count" class="badge bg-warning text-dark ms-2">0</span>
+                                        </div>
+                                        <small>
+                                            <i class="fas fa-lightbulb me-1"></i>
+                                            At least 1 supplier required
+                                        </small>
+                                    </div>
+                                    <div id="selected_suppliers_list" class="mt-2">
+                                        <small class="text-muted">No suppliers selected yet</small>
+                                    </div>
+                                </div>
+
+                                <!-- Suppliers List -->
+                                <div class="suppliers-list">
+                                    @foreach($suppliers as $supplier)
+                                    @php
+                                        $isSelected = old('suppliers.' . $supplier->id . '.selected', false);
+                                        $costPrice = old('suppliers.' . $supplier->id . '.cost_price', '0.00');
+                                        $leadTime = old('suppliers.' . $supplier->id . '.lead_time_days', '0');
+                                    @endphp
+                                    <div class="supplier-item mb-3">
+                                        <div class="card border {{ $isSelected ? 'border-warning' : 'border-light' }}">
+                                            <div class="card-body p-3">
+                                                <div class="row align-items-center">
+                                                    <!-- Supplier Checkbox -->
+                                                    <div class="col-md-4">
+                                                        <div class="form-check">
+                                                            <!-- Hidden input for unchecked state -->
+                                                            <input type="hidden" name="suppliers[{{ $supplier->id }}][selected]" value="0">
+                                                            
+                                                            <input class="form-check-input supplier-checkbox" 
+                                                                   type="checkbox" 
+                                                                   id="supplier_{{ $supplier->id }}"
+                                                                   name="suppliers[{{ $supplier->id }}][selected]"
+                                                                   value="1"
+                                                                   {{ $isSelected ? 'checked' : '' }}
+                                                                   data-supplier-id="{{ $supplier->id }}">
+                                                            <label class="form-check-label" for="supplier_{{ $supplier->id }}">
+                                                                <div class="supplier-name-line">
+                                                                    <i class="fas fa-truck me-2 text-warning"></i>
+                                                                    <span class="supplier-name-text">{{ $supplier->name }}</span>
+                                                                </div>
+                                                                <div class="supplier-email-line">
+                                                                    <i class="fas fa-envelope me-1"></i>
+                                                                    <span class="supplier-email-text">{{ $supplier->email }}</span>
+                                                                </div>
+                                                            </label>
+                                                        </div>
+                                                        <!-- Hidden inputs for pivot data (always submit) -->
+                                                        <input type="hidden" name="suppliers[{{ $supplier->id }}][cost_price]" value="0">
+                                                        <input type="hidden" name="suppliers[{{ $supplier->id }}][lead_time_days]" value="0">
+                                                    </div>
+                                                    
+                                                    <!-- Cost Price Input -->
+                                                    <div class="col-md-4 supplier-details" 
+                                                         id="cost_price_details_{{ $supplier->id }}"
+                                                         style="{{ $isSelected ? '' : 'display: none;' }}">
+                                                        <label for="cost_price_{{ $supplier->id }}" class="form-label small fw-bold">
+                                                            <i class="fas fa-money-bill-wave me-1 text-success"></i>Cost Price
+                                                            <span class="text-danger">*</span>
+                                                        </label>
+                                                        <div class="input-group input-group-sm">
+                                                            <span class="input-group-text">$</span>
+                                                            <input type="number" 
+                                                                   step="0.01" 
+                                                                   min="0"
+                                                                   class="form-control form-control-sm @error('suppliers.' . $supplier->id . '.cost_price') is-invalid @enderror" 
+                                                                   id="cost_price_{{ $supplier->id }}"
+                                                                   name="suppliers[{{ $supplier->id }}][cost_price]"
+                                                                   value="{{ $costPrice }}"
+                                                                   placeholder="0.00"
+                                                                   {{ $isSelected ? '' : 'disabled' }}>
+                                                        </div>
+                                                        @error('suppliers.' . $supplier->id . '.cost_price')
+                                                            <div class="invalid-feedback d-block">
+                                                                <small><i class="fas fa-exclamation-circle me-1"></i>{{ $message }}</small>
+                                                            </div>
+                                                        @enderror
+                                                    </div>
+                                                    
+                                                    <!-- Lead Time Input -->
+                                                    <div class="col-md-4 supplier-details" 
+                                                         id="lead_time_details_{{ $supplier->id }}"
+                                                         style="{{ $isSelected ? '' : 'display: none;' }}">
+                                                        <label for="lead_time_{{ $supplier->id }}" class="form-label small fw-bold">
+                                                            <i class="fas fa-clock me-1 text-info"></i>Lead Time
+                                                            <span class="text-danger">*</span>
+                                                        </label>
+                                                        <div class="input-group input-group-sm">
+                                                            <input type="number" 
+                                                                   min="0"
+                                                                   max="365"
+                                                                   class="form-control form-control-sm @error('suppliers.' . $supplier->id . '.lead_time_days') is-invalid @enderror" 
+                                                                   id="lead_time_{{ $supplier->id }}"
+                                                                   name="suppliers[{{ $supplier->id }}][lead_time_days]"
+                                                                   value="{{ $leadTime }}"
+                                                                   placeholder="0"
+                                                                   {{ $isSelected ? '' : 'disabled' }}>
+                                                            <span class="input-group-text">days</span>
+                                                        </div>
+                                                        @error('suppliers.' . $supplier->id . '.lead_time_days')
+                                                            <div class="invalid-feedback d-block">
+                                                                <small><i class="fas fa-exclamation-circle me-1"></i>{{ $message }}</small>
+                                                            </div>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                        @else
+                        <div class="alert alert-warning">
+                            <div class="text-center py-3">
+                                <i class="fas fa-truck fa-2x mb-3"></i>
+                                <h5>No Suppliers Available</h5>
+                                <p class="text-muted">Please run the SupplierSeeder to add suppliers to the database.</p>
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                    <!-- ========== END SUPPLIERS SECTION ========== -->
+
                     <!-- Form Actions -->
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4 pt-3 border-top">
                         <a href="{{ route('products.index') }}" class="btn btn-outline-secondary me-md-2">
@@ -150,7 +306,7 @@
                             <i class="fas fa-redo me-1"></i>Reset Form
                         </button>
                         <button type="submit" class="btn btn-primary" id="submitBtn">
-                            <i class="fas fa-save me-1"></i>Save Product
+                            <i class="fas fa-save me-1"></i>Save Product with Suppliers
                         </button>
                     </div>
                 </form>
@@ -168,10 +324,6 @@
                         <span class="badge bg-light text-dark me-2">
                             <i class="fas fa-layer-group me-1"></i>
                             {{ $categories->total() }} total
-                        </span>
-                        <span class="badge bg-light text-dark">
-                            <i class="fas fa-cube me-1"></i>
-                            {{ $categories->sum('products_count') }} products
                         </span>
                     </div>
                 </div>
@@ -461,13 +613,13 @@
                                 <small class="text-muted">Required, numeric, min 0.01</small>
                             </div>
                         </div>
-                        <div class="d-flex align-items-start">
-                            <div class="bg-light p-2 rounded me-3">
-                                <i class="fas fa-info text-muted"></i>
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="bg-warning bg-opacity-10 p-2 rounded me-3">
+                                <i class="fas fa-check text-warning"></i>
                             </div>
                             <div>
-                                <h6>Description</h6>
-                                <small class="text-muted">Optional, max 1000 characters</small>
+                                <h6>Suppliers</h6>
+                                <small class="text-muted">At least 1 required with cost & lead time</small>
                             </div>
                         </div>
                     </div>
@@ -479,93 +631,169 @@
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Character counter for description
-            const description = document.getElementById('description');
-            const charCount = document.getElementById('charCount');
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Character counter for description
+        const description = document.getElementById('description');
+        const charCount = document.getElementById('charCount');
 
-            if (description && charCount) {
-                // Update count on load
-                charCount.textContent = description.value.length;
+        if (description && charCount) {
+            // Update count on load
+            charCount.textContent = description.value.length;
 
-                // Update count on input
-                description.addEventListener('input', function() {
-                    charCount.textContent = this.value.length;
-                    if (this.value.length > 1000) {
-                        charCount.classList.add('text-danger');
-                    } else {
-                        charCount.classList.remove('text-danger');
-                    }
-                });
-            }
-
-            // Form submission animation
-            const form = document.getElementById('createProductForm');
-            const submitBtn = document.getElementById('submitBtn');
-
-            if (form && submitBtn) {
-                form.addEventListener('submit', function(e) {
-                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
-                    submitBtn.disabled = true;
-                });
-            }
-
-            // Reset button
-            const resetBtn = document.getElementById('resetBtn');
-            if (resetBtn) {
-                resetBtn.addEventListener('click', function() {
-                    charCount.textContent = '0';
-                });
-            }
-
-            // Auto-focus on first field
-            document.getElementById('name').focus();
-
-            // Category selection enhancement
-            const categorySelect = document.getElementById('category_id');
-            if (categorySelect) {
-                categorySelect.addEventListener('change', function() {
-                    const selectedOption = this.options[this.selectedIndex];
-                    console.log('Selected category:', selectedOption.text);
-                });
-            }
-
-            // Initialize popovers with custom options
-            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-            var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-                // Create popover with custom options
-                var popover = new bootstrap.Popover(popoverTriggerEl, {
-                    trigger: 'click', // Show on click
-                    html: true,
-                    sanitize: false, // Allow HTML content
-                    customClass: 'category-popover',
-                    offset: [0, 10] // Offset from button
-                });
-
-                // Close popover when clicking outside
-                document.addEventListener('click', function(e) {
-                    if (!popoverTriggerEl.contains(e.target) && 
-                        !document.querySelector('.popover').contains(e.target)) {
-                        popover.hide();
-                    }
-                });
-
-                return popover;
-            });
-
-            // Close all popovers when clicking escape
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    popoverList.forEach(function(popover) {
-                        popover.hide();
-                    });
+            // Update count on input
+            description.addEventListener('input', function() {
+                charCount.textContent = this.value.length;
+                if (this.value.length > 1000) {
+                    charCount.classList.add('text-danger');
+                } else {
+                    charCount.classList.remove('text-danger');
                 }
             });
+        }
+
+        // Supplier checkbox toggle
+        const checkboxes = document.querySelectorAll('.supplier-checkbox');
+        const selectedCount = document.getElementById('selected_count');
+        const selectedList = document.getElementById('selected_suppliers_list');
+
+        // Update selected suppliers list
+        function updateSelectedSuppliers() {
+            const selected = Array.from(checkboxes).filter(cb => cb.checked);
+            selectedCount.textContent = selected.length;
+                
+            if (selected.length > 0) {
+                const names = selected.map(cb => {
+                    const label = cb.closest('.form-check').querySelector('.form-check-label');
+                    return label.textContent.trim();
+                });
+                selectedList.innerHTML = names.map(name => 
+                    `<span class="badge bg-warning text-dark me-1 mb-1">${name}</span>`
+                ).join('');
+            } else {
+                selectedList.innerHTML = '<small class="text-muted">No suppliers selected yet</small>';
+            }
+        }
+
+        // Toggle supplier details visibility and enable/disable inputs
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const supplierId = this.dataset.supplierId;
+                const costDetails = document.getElementById(`cost_price_details_${supplierId}`);
+                const leadDetails = document.getElementById(`lead_time_details_${supplierId}`);
+                const costInput = document.getElementById(`cost_price_${supplierId}`);
+                const leadInput = document.getElementById(`lead_time_${supplierId}`);
+                const card = this.closest('.card');
+                
+                if (this.checked) {
+                    costDetails.style.display = 'block';
+                    leadDetails.style.display = 'block';
+                    costInput.disabled = false;
+                    leadInput.disabled = false;
+                    costInput.required = true;
+                    leadInput.required = true;
+                    card.classList.add('border-warning');
+                    card.classList.remove('border-light');
+                    
+                    // Focus on cost price input
+                    setTimeout(() => costInput.focus(), 100);
+                } else {
+                    costDetails.style.display = 'none';
+                    leadDetails.style.display = 'none';
+                    costInput.disabled = true;
+                    leadInput.disabled = true;
+                    costInput.required = false;
+                    leadInput.required = false;
+                    card.classList.remove('border-warning');
+                    card.classList.add('border-light');
+                }
+                    
+                updateSelectedSuppliers();
+            });
+                
+            // Trigger change event on page load if checked
+            if (checkbox.checked) {
+                checkbox.dispatchEvent(new Event('change'));
+            }
         });
-    </script>
+
+        // Form submission validation
+        const form = document.getElementById('createProductForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        if (form && submitBtn) {
+            form.addEventListener('submit', function(e) {
+                // Validate at least one supplier is selected
+                const selectedSuppliers = Array.from(checkboxes).filter(cb => cb.checked);
+                if (selectedSuppliers.length === 0) {
+                    e.preventDefault();
+                    alert('Please select at least one supplier.');
+                    return false;
+                }
+                    
+                // Validate all selected suppliers have valid pivot data
+                let hasErrors = false;
+                selectedSuppliers.forEach(cb => {
+                    const supplierId = cb.dataset.supplierId;
+                    const costInput = document.getElementById(`cost_price_${supplierId}`);
+                    const leadInput = document.getElementById(`lead_time_${supplierId}`);
+                    
+                    if (!costInput.value || parseFloat(costInput.value) <= 0) {
+                        e.preventDefault();
+                        alert(`Please enter a valid cost price for ${cb.closest('.form-check').querySelector('.form-check-label').textContent.trim()}`);
+                        costInput.focus();
+                        hasErrors = true;
+                        return false;
+                    }
+                    
+                    if (!leadInput.value || parseInt(leadInput.value) < 0) {
+                        e.preventDefault();
+                        alert(`Please enter a valid lead time for ${cb.closest('.form-check').querySelector('.form-check-label').textContent.trim()}`);
+                        leadInput.focus();
+                        hasErrors = true;
+                        return false;
+                    }
+                });
+                
+                if (hasErrors) return false;
+                    
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+                submitBtn.disabled = true;
+            });
+        }
+
+        // Reset button
+        const resetBtn = document.getElementById('resetBtn');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', function() {
+                charCount.textContent = '0';
+                checkboxes.forEach(cb => {
+                    cb.checked = false;
+                    cb.dispatchEvent(new Event('change'));
+                });
+                updateSelectedSuppliers();
+            });
+        }
+
+        // Auto-focus on first field
+        document.getElementById('name').focus();
+
+        // Initialize on page load
+        updateSelectedSuppliers();
+
+        // Initialize popovers
+        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'click',
+                html: true,
+                sanitize: false,
+                customClass: 'category-popover',
+                offset: [0, 10]
+            });
+        });
+    });
+</script>
 @endpush
 
 @php
@@ -580,7 +808,7 @@
             case 'Health & Beauty': return 'spa';
             case 'Toys': return 'gamepad';
             case 'Automotive': return 'car';
-            case 'Test Empty Category': return 'vial'; // Test tube icon for testing
+            case 'Test Empty Category': return 'vial';
             default: return 'tag';
         }
     }

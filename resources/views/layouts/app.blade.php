@@ -42,7 +42,7 @@
                             <i class="fas fa-plus me-1"></i>Add Product
                         </a>
                     </li>
-                    <!-- NEW: Categories Dropdown -->
+                    <!-- Categories Dropdown -->
                     <li class="nav-item dropdown position-static">
                         <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" 
                            data-bs-toggle="dropdown" data-bs-auto-close="outside"
@@ -107,7 +107,7 @@
                                                         @break
                                                     @case('Test Empty Category')
                                                         <span class="badge bg-secondary text-white me-2 px-2 py-1">
-                                                            <i class="fas fa-vial"></i> {{-- Test tube icon for testing --}}
+                                                            <i class="fas fa-vial"></i>
                                                         </span>
                                                         @break
                                                     @default
@@ -136,10 +136,75 @@
                             @endif
                         </ul>
                     </li>
+                    <!-- NEW: Suppliers Link -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#suppliersModal">
+                            <i class="fas fa-truck me-1"></i>Suppliers
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
+
+    <!-- Suppliers Modal -->
+    <div class="modal fade" id="suppliersModal" tabindex="-1" aria-labelledby="suppliersModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="suppliersModalLabel">
+                        <i class="fas fa-truck me-2"></i>All Suppliers
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @php
+                        $suppliers = \App\Models\Supplier::withCount('products')->orderBy('name')->get();
+                    @endphp
+                    @if($suppliers->count() > 0)
+                        <div class="row">
+                            @foreach($suppliers as $supplier)
+                            <div class="col-md-6 mb-3">
+                                <div class="card border h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-start">
+                                            <div class="bg-warning bg-opacity-10 rounded-circle p-2 me-3">
+                                                <i class="fas fa-truck text-warning"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-1">{{ $supplier->name }}</h6>
+                                                <p class="text-muted mb-2">
+                                                    <i class="fas fa-envelope me-1"></i>{{ $supplier->email }}
+                                                </p>
+                                                <div class="small text-muted">
+                                                    <i class="fas fa-database me-1"></i>
+                                                    Supplies: <strong>{{ $supplier->products_count }}</strong> products
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="text-center py-4">
+                            <i class="fas fa-truck fa-3x text-muted mb-3"></i>
+                            <h5>No Suppliers Found</h5>
+                            <p class="text-muted">Run the SupplierSeeder to add suppliers</p>
+                        </div>
+                    @endif
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Task 06: Many-to-Many Relationships
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Main Content -->
     <div class="container my-4 page-transition">
@@ -157,7 +222,7 @@
             </div>
         @endif
 
-        <!-- Breadcrumb : This section show where you are in the file Ex. (Home > Products > ...) --> 
+        <!-- Breadcrumb -->
         @hasSection('breadcrumb')
             <nav aria-label="breadcrumb" class="mb-3 fade-in">
                 <ol class="breadcrumb">
@@ -170,15 +235,16 @@
         @yield('content')
     </div>
 
-    <!-- Footer -->
+    <!-- Footer - UPDATED FOR TASK 06 -->
     <footer class="text-center text-muted fade-in">
         <div class="container py-3">
             <p class="mb-0">
-                <i class="fas fa-code me-2"></i>Laravel Task 05 - Eloquent Relationships & Category Association
+                <i class="fas fa-code me-2"></i>Laravel Task 06 - Many-to-Many Relationships & Suppliers
             </p>
             <small>IUG University Training Project |
-                <i class="fas fa-users me-1"></i>One-to-Many Relationships |
-                <i class="fas fa-sitemap ms-2 me-1"></i>Eager Loading
+                <i class="fas fa-truck me-1"></i>Many-to-Many Relationships |
+                <i class="fas fa-exchange-alt ms-2 me-1"></i>Pivot Tables |
+                <i class="fas fa-table ms-2 me-1"></i>Suppliers System
             </small>
         </div>
     </footer>

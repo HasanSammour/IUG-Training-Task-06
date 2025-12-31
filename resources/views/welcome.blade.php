@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Task 05 Solution')
+@section('title', 'Task 06 Solution')
 
 @section('content')
 <div class="row fade-in">
@@ -30,10 +30,10 @@
             <!-- Center Title -->
             <div class="col-md-4 text-center fade-in">
                 <h1 class="display-5 mb-2">
-                    <i class="fas fa-sitemap text-primary"></i> Task 05
+                    <i class="fas fa-exchange-alt text-warning"></i> Task 06
                 </h1>
-                <p class="lead text-muted">Eloquent Relationships & Category Association</p>
-                <div class="badge bg-primary text-white p-2 mt-2">
+                <p class="lead text-muted">Many-to-Many Relationships & Suppliers System</p>
+                <div class="badge bg-warning text-dark p-2 mt-2">
                     <i class="fas fa-calendar-alt me-1"></i> December 2025 <i class="fas fa-calendar-alt me-1"></i>
                 </div>
             </div>
@@ -62,11 +62,11 @@
         <!-- Main Header -->
         <div class="text-center mb-5 fade-in">
             <h2 class="display-6 mb-3">
-                <i class="fas fa-project-diagram text-info"></i> 
-                Eloquent Relationships & Database Modeling
-                <i class="fas fa-project-diagram text-info"></i>
+                <i class="fas fa-truck text-warning"></i> 
+                Many-to-Many Relationships with Suppliers
+                <i class="fas fa-exchange-alt text-warning"></i>
             </h2>
-            <p class="text-muted">One-to-Many Relationships with Categories & Products</p>
+            <p class="text-muted">Products ↔ Suppliers with Pivot Data (cost_price, lead_time_days)</p>
         </div>
         
         <!-- Task Cards -->
@@ -103,81 +103,81 @@
                 </div>
             </div>
 
-            <!-- Task 05 NEW CARD -->
+            <!-- Task 05 Card -->
             <div class="col-md-3 mb-4">
-                <div class="card h-100 slide-in pulse-animation">
+                <div class="card h-100 slide-in">
                     <div class="card-header bg-info text-white">
-                        <h4 style="font-size: 1.2rem;"><i class="fas fa-sitemap me-2"></i> Task 05: Relationships</h4>
+                        <h4 style="font-size: 1.2rem;"><i class="fas fa-sitemap me-2"></i> Task 05: 1-Many</h4>
                     </div>
                     <div class="card-body">
                         <ul class="list-unstyled">
                             <li class="mb-2"><i class="fas fa-check-circle text-info me-2"></i> Category Model</li>
                             <li class="mb-2"><i class="fas fa-check-circle text-info me-2"></i> One-to-Many</li>
                             <li class="mb-2"><i class="fas fa-check-circle text-info me-2"></i> Foreign Keys</li>
-                            <li class="mb-2"><i class="fas fa-check-circle text-info me-2"></i> Eager Loading</li>
-                            <li class="mb-2"><i class="fas fa-check-circle text-info me-2"></i> Category Dropdown</li>
                         </ul>
                     </div>
                 </div>
             </div>
 
-            <!-- Features Card -->
+            <!-- Task 06 NEW CARD -->
             <div class="col-md-3 mb-4">
-                <div class="card h-100 slide-in">
+                <div class="card h-100 slide-in pulse-animation">
                     <div class="card-header bg-warning text-dark">
-                        <h4 style="font-size: 1.2rem;"><i class="fas fa-bolt me-2"></i> Features</h4>
+                        <h4 style="font-size: 1.2rem;"><i class="fas fa-exchange-alt me-2"></i> Task 06: M-M</h4>
                     </div>
                     <div class="card-body">
                         <ul class="list-unstyled">
-                            <li class="mb-2"><i class="fas fa-rocket text-warning me-2"></i> Eager Loading</li>
-                            <li class="mb-2"><i class="fas fa-tachometer-alt text-warning me-2"></i> Performance</li>
-                            <li class="mb-2"><i class="fas fa-code-branch text-warning me-2"></i> Relational DB</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-warning me-2"></i> Supplier Model</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-warning me-2"></i> Many-to-Many</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-warning me-2"></i> Pivot Data</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-warning me-2"></i> Supplier Forms</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-warning me-2"></i> Sync Relationships</li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- Relationships Features Section -->
+        <!-- Many-to-Many Features Section -->
         <div class="card mb-5 fade-in">
-            <div class="card-header bg-gradient-info text-white">
+            <div class="card-header bg-gradient-warning text-dark">
                 <h4 class="mb-0">
-                    <i class="fas fa-project-diagram me-2"></i>Eloquent Relationships Implemented
+                    <i class="fas fa-exchange-alt me-2"></i>Many-to-Many Relationships Implemented
                 </h4>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="d-flex align-items-start mb-3">
-                            <div class="bg-info rounded-circle p-2 me-3">
-                                <i class="fas fa-sitemap text-white"></i>
+                            <div class="bg-warning rounded-circle p-2 me-3">
+                                <i class="fas fa-truck text-white"></i>
                             </div>
                             <div>
-                                <h5>One-to-Many Relationship</h5>
-                                <p class="text-muted mb-0">One Category has Many Products</p>
-                                <small><code>Category::hasMany(Product::class)</code></small>
+                                <h5>Supplier Model</h5>
+                                <p class="text-muted mb-0">Suppliers with name and email</p>
+                                <small><code>php artisan make:model Supplier -m</code></small>
                             </div>
                         </div>
                         
                         <div class="d-flex align-items-start mb-3">
                             <div class="bg-success rounded-circle p-2 me-3">
-                                <i class="fas fa-database text-white"></i>
+                                <i class="fas fa-table text-white"></i>
                             </div>
                             <div>
-                                <h5>Database Migration</h5>
-                                <p class="text-muted mb-0">Foreign key constraint with cascade</p>
-                                <small><code>$table->foreignId('category_id')->constrained()->onDelete('cascade')</code></small>
+                                <h5>Pivot Table</h5>
+                                <p class="text-muted mb-0">product_supplier with extra data</p>
+                                <small><code>cost_price, lead_time_days, timestamps</code></small>
                             </div>
                         </div>
                         
                         <div class="d-flex align-items-start mb-3">
-                            <div class="bg-warning rounded-circle p-2 me-3">
-                                <i class="fas fa-tachometer-alt text-white"></i>
+                            <div class="bg-info rounded-circle p-2 me-3">
+                                <i class="fas fa-link text-white"></i>
                             </div>
                             <div>
-                                <h5>Eager Loading</h5>
-                                <p class="text-muted mb-0">Prevents N+1 query problem</p>
-                                <small><code>Product::with('category')->get()</code></small>
+                                <h5>Eloquent Relationships</h5>
+                                <p class="text-muted mb-0">belongsToMany with pivot data</p>
+                                <small><code>-&gt;withPivot(['cost_price', 'lead_time_days'])</code></small>
                             </div>
                         </div>
                     </div>
@@ -185,34 +185,34 @@
                     <div class="col-md-6">
                         <div class="d-flex align-items-start mb-3">
                             <div class="bg-primary rounded-circle p-2 me-3">
-                                <i class="fas fa-folder text-white"></i>
+                                <i class="fas fa-exchange-alt text-white"></i>
                             </div>
                             <div>
-                                <h5>Category Model</h5>
-                                <p class="text-muted mb-0">Complete CRUD for categories</p>
-                                <small><code>php artisan make:model Category -m</code></small>
+                                <h5>Many-to-Many</h5>
+                                <p class="text-muted mb-0">Product ↔ Supplier bidirectional</p>
+                                <small><code>Product::belongsToMany(Supplier::class)</code></small>
                             </div>
                         </div>
                         
                         <div class="d-flex align-items-start mb-3">
                             <div class="bg-danger rounded-circle p-2 me-3">
-                                <i class="fas fa-list-alt text-white"></i>
+                                <i class="fas fa-sync-alt text-white"></i>
                             </div>
                             <div>
-                                <h5>Dynamic Dropdowns</h5>
-                                <p class="text-muted mb-0">Category selection in all forms</p>
-                                <small><code>&lt;select name="category_id"&gt;</code></small>
+                                <h5>Sync Method</h5>
+                                <p class="text-muted mb-0">Automatic relationship management</p>
+                                <small><code>$product-&gt;suppliers()-&gt;sync($data)</code></small>
                             </div>
                         </div>
                         
                         <div class="d-flex align-items-start">
-                            <div class="bg-dark rounded-circle p-2 me-3">
-                                <i class="fas fa-seedling text-white"></i>
+                            <div class="bg-purple rounded-circle p-2 me-3">
+                                <i class="fas fa-calculator text-white"></i>
                             </div>
                             <div>
-                                <h5>Advanced Seeding</h5>
-                                <p class="text-muted mb-0">Products assigned to categories</p>
-                                <small><code>Product::factory()-&gt;count(5)-&gt;create()</code></small>
+                                <h5>Profit Calculations</h5>
+                                <p class="text-muted mb-0">Dynamic margin calculations</p>
+                                <small><code>Profit = Price - Cost Price</code></small>
                             </div>
                         </div>
                     </div>
@@ -220,90 +220,53 @@
             </div>
         </div>
         
-        <!-- Action Buttons -->
-        <div class="text-center mb-5 fade-in">
-            <a href="{{ route('products.index') }}" class="btn btn-primary btn-lg float-animation me-3">
-                <i class="fas fa-boxes me-2"></i> View Products with Categories
-            </a>
-            <a href="{{ route('products.create') }}" class="btn btn-info btn-lg rotate-on-hover">
-                <i class="fas fa-plus-circle me-2"></i> Add Product with Category
-            </a>
-        </div>
-    
-        <!-- Category Statistics -->
-        <div class="row mb-5">
-            @php
-                $categories = \App\Models\Category::withCount('products')->orderBy('products_count', 'desc')->get();
-            @endphp
-            
-            @foreach($categories as $category)
-            <div class="col-md-3 col-6 mb-3">
-                <div class="category-stats slide-in" 
-                     style="animation-delay: {{ $loop->index * 0.1 }}s;
-                            background: @if($category->name == 'Electronics') linear-gradient(135deg, #e3f2fd, #bbdefb)
-                            @elseif($category->name == 'Fashion') linear-gradient(135deg, #fce4ec, #f8bbd9)
-                            @elseif($category->name == 'Home & Garden') linear-gradient(135deg, #e8f5e8, #c8e6c9)
-                            @elseif($category->name == 'Books') linear-gradient(135deg, #fff8e1, #ffecb3)
-                            @elseif($category->name == 'Sports') linear-gradient(135deg, #e8eaf6, #c5cae9)
-                            @elseif($category->name == 'Health & Beauty') linear-gradient(135deg, #f3e5f5, #e1bee7)
-                            @elseif($category->name == 'Toys') linear-gradient(135deg, #e0f2f1, #b2dfdb)
-                            @elseif($category->name == 'Automotive') linear-gradient(135deg, #ffe5cc, #ffd8b1)
-                            @else linear-gradient(135deg, #f5f5f5, #e0e0e0) @endif">
-                    <div class="icon-container mb-3">
-                        @if($category->name == 'Electronics') <i class="fas fa-laptop fa-2x text-primary"></i>
-                        @elseif($category->name == 'Fashion') <i class="fas fa-tshirt fa-2x text-danger"></i>
-                        @elseif($category->name == 'Home & Garden') <i class="fas fa-home fa-2x text-success"></i>
-                        @elseif($category->name == 'Books') <i class="fas fa-book fa-2x text-warning"></i>
-                        @elseif($category->name == 'Sports') <i class="fas fa-futbol fa-2x text-info"></i>
-                        @elseif($category->name == 'Health & Beauty') <i class="fas fa-spa fa-2x text-purple"></i>
-                        @elseif($category->name == 'Toys') <i class="fas fa-gamepad fa-2x text-teal"></i>
-                        @elseif($category->name == 'Automotive') <i class="fas fa-car fa-2x text-orange"></i>
-                        @else <i class="fas fa-tag fa-2x text-secondary"></i>
-                        @endif
-                    </div>
-                    <h5 class="fw-bold">{{ $category->name }}</h5>
-                    <h2 class="mb-0">{{ $category->products_count }}</h2>
-                    @if($category->products_count == 1)
-                        <small>Product</small>
-                    @else
-                        <small>Products</small>
-                    @endif
-                </div>
-            </div>
-            @endforeach
-        </div>
-        
         <!-- Database Relationship Diagram -->
-        <div class="card fade-in mb-4">
+        <div class="card mb-5 fade-in">
             <div class="card-header bg-dark text-white">
                 <h5><i class="fas fa-diagram-project me-2"></i> Database Relationship Diagram</h5>
             </div>
             <div class="card-body">
                 <div class="text-center">
                     <div class="mb-4">
+                        <!-- Category -->
                         <div class="d-inline-block p-3 rounded bg-primary text-white mb-2">
                             <i class="fas fa-folder fa-2x"></i>
                             <div>categories</div>
                         </div>
-                        <div class="d-inline-block mx-4">
+                        <div class="d-inline-block mx-2">
                             <i class="fas fa-arrow-right fa-2x text-muted"></i>
                         </div>
+                        
+                        <!-- Product -->
                         <div class="d-inline-block p-3 rounded bg-success text-white">
                             <i class="fas fa-box fa-2x"></i>
                             <div>products</div>
                         </div>
+                        
+                        <!-- Many-to-Many Connection -->
+                        <div class="d-inline-block mx-3">
+                            <i class="fas fa-exchange-alt fa-2x text-warning"></i>
+                        </div>
+                        
+                        <!-- Supplier -->
+                        <div class="d-inline-block p-3 rounded bg-warning text-dark">
+                            <i class="fas fa-truck fa-2x"></i>
+                            <div>suppliers</div>
+                        </div>
                     </div>
                     
                     <div class="bg-light p-4 rounded mb-3">
-                        <h6>One-to-Many Relationship</h6>
+                        <h6>Relationships</h6>
                         <p class="mb-0">
                             <code>Category::hasMany(Product::class)</code> ←→ 
-                            <code>Product::belongsTo(Category::class)</code>
+                            <code>Product::belongsTo(Category::class)</code><br>
+                            <code>Product::belongsToMany(Supplier::class)</code> ↔ 
+                            <code>Supplier::belongsToMany(Product::class)</code>
                         </p>
                     </div>
                     
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <h6>Category Table</h6>
                             <div class="bg-light p-3 rounded">
                                 <code>id (PK)</code><br>
@@ -311,98 +274,131 @@
                                 <code>timestamps</code>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <h6>Product Table</h6>
                             <div class="bg-light p-3 rounded">
                                 <code>id (PK)</code><br>
                                 <code>name (UNIQUE)</code><br>
                                 <code>price (DECIMAL)</code><br>
-                                <code>description (TEXT, nullable)</code><br>
+                                <code>Description (NULLABLE)</code><br>
                                 <code>category_id (FK)</code><br>
                                 <code>timestamps</code>
                             </div>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>Supplier Table</h6>
+                            <div class="bg-light p-3 rounded">
+                                <code>id (PK)</code><br>
+                                <code>name (UNIQUE)</code><br>
+                                <code>email (UNIQUE)</code><br>
+                                <code>timestamps</code>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pivot Table -->
+                    <div class="mt-4">
+                        <h6>Pivot Table: product_supplier</h6>
+                        <div class="bg-light p-3 rounded">
+                            <code>id (PK)</code><br>
+                            <code>product_id (FK) → products.id</code><br>
+                            <code>supplier_id (FK) → suppliers.id</code><br>
+                            <code>cost_price (DECIMAL)</code><br>
+                            <code>lead_time_days (INTEGER)</code><br>
+                            <code>timestamps</code><br>
+                            <code>UNIQUE(product_id, supplier_id)</code>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- Commands Used -->
-        <div class="card fade-in">
-            <div class="card-header bg-gradient-warning text-dark">
-                <h5><i class="fas fa-terminal me-2"></i> Task 05 Commands Used</h5>
-            </div>
-            <div class="card-body">
-                <div class="bg-light p-3 rounded mb-3">
-                    <code>$ php artisan make:model Category -m</code><br>
-                    <code>$ php artisan make:seeder CategorySeeder</code><br>
-                    <code>$ php artisan make:migration add_category_id_to_products_table  <strong>// This is optional</strong> </code><br>
-                    <code>$ php artisan migrate:fresh --seed</code><br><br>
-                    
-                    <code>// Test relationships in Tinker</code><br>
-                    <code>>> $category = Category::first()</code><br>
-                    <code>>> $category->products</code><br>
-                    <code>>> $product = Product::first()</code><br>
-                    <code>>> $product->category</code><br>
-                    <code>>> Product::with('category')->get()  <strong>// Eager Loading</strong></code>
-                </div>
-                <small class="text-muted">
-                    <i class="fas fa-lightbulb me-1"></i>
-                    Eager loading prevents the N+1 query problem and significantly improves performance!
-                </small>
-            </div>
-        </div>
-        
-        <!-- Category Examples -->
+        <!-- Supplier Examples -->
         <div class="card fade-in mt-4">
-            <div class="card-header bg-gradient-success text-white">
-                <h5><i class="fas fa-list me-2"></i> Sample Categories & Products</h5>
+            <div class="card-header bg-gradient-warning text-dark">
+                <h5><i class="fas fa-truck me-2"></i> Sample Suppliers & Relationships <strong>{This is only fake sample}</strong></h5>
             </div>
             <div class="card-body">
                 <div class="row">
                     @php
-                        $sampleData = [
-                            ['Electronics', 'Laptop Pro', '$1299.99', 'laptop'],
-                            ['Fashion', 'Designer Jeans', '$89.99', 'tshirt'],
-                            ['Home & Garden', 'Modern Sofa', '$899.99', 'couch'],
-                            ['Books', 'Programming Guide', '$39.99', 'book'],
-                            ['Sports', 'Football', '$34.99', 'futbol'],
-                            ['Health & Beauty', 'Vitamin Serum', '$24.99', 'spa'],
-                            ['Toys', 'LEGO Set', '$149.99', 'gamepad'],
-                            ['Automotive', 'Car GPS', '$129.99', 'car']
+                        $sampleSuppliers = [
+                            ['Tech Suppliers Inc.', 'orders@techsuppliers.com', 'Laptops, Phones', '3-7 days'],
+                            ['Global Fashion Distributors', 'contact@globalfashion.com', 'Clothing, Shoes', '5-14 days'],
+                            ['Home Essentials Ltd.', 'sales@homeessentials.com', 'Furniture, Decor', '7-21 days'],
+                            ['Book World Publishers', 'orders@bookworld.com', 'Books, Magazines', '2-5 days'],
+                            ['Sports Gear International', 'info@sportsgear.com', 'Equipment, Apparel', '3-10 days'],
+                            ['Health & Beauty Co.', 'supply@healthbeauty.com', 'Cosmetics, Vitamins', '1-3 days'],
+                            ['Toy Masters Ltd.', 'orders@toymasters.com', 'Toys, Games', '4-10 days'],
+                            ['Auto Parts Express', 'contact@autopartsexpress.com', 'Parts, Accessories', '2-7 days']
                         ];
                     @endphp
                     
-                    @foreach($sampleData as $data)
+                    @foreach($sampleSuppliers as $supplier)
                     <div class="col-md-3 mb-3">
                         <div class="p-3 rounded border">
                             <div class="d-flex align-items-center mb-2">
-                                <span class="badge 
-                                    @if($data[0] == 'Electronics') bg-primary
-                                    @elseif($data[0] == 'Fashion') bg-danger
-                                    @elseif($data[0] == 'Home & Garden') bg-success
-                                    @elseif($data[0] == 'Books') bg-warning text-dark
-                                    @elseif($data[0] == 'Sports') bg-info
-                                    @elseif($data[0] == 'Health & Beauty') bg-purple
-                                    @elseif($data[0] == 'Toys') bg-teal
-                                    @elseif($data[0] == 'Automotive') bg-orange
-                                    @else bg-secondary @endif
-                                    me-2">
-                                    <i class="fas fa-{{ $data[3] }}"></i>
+                                <span class="badge bg-warning text-dark me-2">
+                                    <i class="fas fa-truck"></i>
                                 </span>
-                                <strong>{{ $data[0] }}</strong>
+                                <strong>{{ $supplier[0] }}</strong>
                             </div>
-                            <div class="mb-1">
+                            <div class="mb-1 small">
+                                <i class="fas fa-envelope text-muted me-1"></i>
+                                {{ $supplier[1] }}
+                            </div>
+                            <div class="mb-1 small">
                                 <i class="fas fa-box text-muted me-1"></i>
-                                {{ $data[1] }}
+                                {{ $supplier[2] }}
                             </div>
-                            <div class="text-success fw-bold">
-                                <i class="fas fa-dollar-sign"></i> {{ $data[2] }}
+                            <div class="text-info small">
+                                <i class="fas fa-clock me-1"></i>
+                                Lead: {{ $supplier[3] }}
                             </div>
                         </div>
                     </div>
                     @endforeach
                 </div>
+            </div>
+        </div>
+        
+        <br>
+        <br>
+
+        <!-- Action Buttons -->
+        <div class="text-center mb-5 fade-in">
+            <a href="{{ route('products.index') }}" class="btn btn-primary btn-lg float-animation me-3">
+                <i class="fas fa-boxes me-2"></i> View Products with Suppliers
+            </a>
+            <a href="{{ route('products.create') }}" class="btn btn-warning btn-lg rotate-on-hover">
+                <i class="fas fa-plus-circle me-2"></i> Add Product with Suppliers
+            </a>
+        </div>
+
+        <!-- Commands Used -->
+        <div class="card fade-in">
+            <div class="card-header bg-gradient-info text-white">
+                <h5><i class="fas fa-terminal me-2"></i> Task 06 Commands Used</h5>
+            </div>
+            <div class="card-body">
+                <div class="bg-light p-3 rounded mb-3">
+                    <code>$ php artisan make:model Supplier -m</code><br>
+                    <code>$ php artisan make:migration create_product_supplier_table</code><br>
+                    <code>$ php artisan make:seeder SupplierSeeder</code><br>
+                    <code>$ php artisan make:seeder ProductSupplierSeeder</code><br>
+                    <code>$ php artisan migrate:fresh --seed</code><br><br>
+                    
+                    <code>// Test relationships in Tinker</code><br>
+                    <code>>> $product = Product::first()</code><br>
+                    <code>>> $product->suppliers</code><br>
+                    <code>>> $supplier = Supplier::first()</code><br>
+                    <code>>> $supplier->products</code><br>
+                    <code>>> $product->suppliers()->attach($supplier, ['cost_price' => 100, 'lead_time_days' => 5])</code><br>
+                    <code>>> $product->suppliers()->sync([1 => ['cost_price' => 100], 2 => ['cost_price' => 120]])</code>
+                </div>
+                <small class="text-muted">
+                    <i class="fas fa-lightbulb me-1"></i>
+                    Many-to-Many relationships allow products to have multiple suppliers with individual pricing!
+                </small>
             </div>
         </div>
     </div>

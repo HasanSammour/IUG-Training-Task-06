@@ -294,3 +294,344 @@ body.modal-open {
     border-top: 1px solid #dee2e6;
     padding-top: 1rem;
 }
+
+/* ! From Task 06 Suppliers Styles ! */
+.supplier-card {
+    transition: all 0.3s ease;
+}
+
+.supplier-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.supplier-checkbox:checked + .form-check-label {
+    color: #198754;
+    font-weight: bold;
+}
+
+.profit-calculation .text-success {
+    color: #198754 !important;
+}
+
+.profit-calculation .text-warning {
+    color: #ffc107 !important;
+}
+
+.profit-calculation .text-danger {
+    color: #dc3545 !important;
+}
+
+/* Progress bar styles for supplier cards */
+.progress-bar {
+    border-radius: 4px;
+}
+
+/* From Task 06 */
+/* ===== UPDATED SUPPLIER STYLES ===== */
+
+/* Fix for supplier section - make inputs smaller */
+.supplier-details .input-group-sm {
+    width: 100%;
+    min-width: 120px;
+}
+
+.supplier-details .form-control-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    height: calc(1.5em + 0.5rem + 2px);
+}
+
+/* Make supplier name and email fit in one line with truncation */
+.supplier-item .form-check-label {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 180px;
+    max-width: 220px;
+}
+
+.supplier-name-line {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+    font-weight: bold;
+    width: 100%;
+}
+
+.supplier-name-line i.fa-truck {
+    flex-shrink: 0;
+    margin-right: 8px;
+}
+
+.supplier-name-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+.supplier-email-line {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.supplier-email-line i.fa-envelope {
+    flex-shrink: 0;
+    margin-right: 6px;
+    font-size: 0.8rem;
+}
+
+.supplier-email-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+/* Adjust supplier card layout */
+.supplier-item .row.align-items-center {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+}
+
+.supplier-item .col-md-4 {
+    padding-right: 12px;
+    padding-left: 12px;
+    flex: 1;
+    min-width: 0; /* Crucial for text truncation to work */
+}
+
+/* Give more space to supplier info column */
+.supplier-item .col-md-4:first-child {
+    flex: 1.5;
+    min-width: 220px;
+    max-width: 250px;
+}
+
+.supplier-item .col-md-4:not(:first-child) {
+    flex: 1;
+    min-width: 140px;
+}
+
+/* Ensure checkbox and label are properly aligned */
+.supplier-item .form-check {
+    margin-bottom: 0.5rem;
+    width: 100%;
+}
+
+.supplier-item .form-check-input {
+    margin-top: 0.3em;
+    margin-right: 0.75rem;
+    float: left;
+}
+
+/* Make form-check-label container */
+.supplier-item .form-check-label {
+    display: block;
+    overflow: hidden; /* Contain the floated content */
+    width: calc(100% - 30px); /* Account for checkbox width */
+    margin-left: 30px; /* Push content away from checkbox */
+}
+
+/* Hover effect to show full text */
+.supplier-name-line:hover .supplier-name-text,
+.supplier-email-line:hover .supplier-email-text {
+    overflow: visible;
+    white-space: normal;
+    position: relative;
+    z-index: 10;
+    background: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    max-width: 300px;
+}
+
+.supplier-email-line:hover .supplier-email-text {
+    max-width: 350px;
+}
+
+/* Text color classes for icons (not background) */
+.text-purple {
+    color: #6f42c1 !important;
+}
+
+.text-teal {
+    color: #20c997 !important;
+}
+
+.text-orange {
+    color: #fd7e14 !important;
+}
+
+/* If you want to keep using bg- classes for icons, add this: */
+.bg-purple i,
+.bg-teal i,
+.bg-orange i {
+    color: inherit !important;
+}
+
+.supplier-helper-text {
+    font-size: 0.7rem !important;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    margin-top: 2px;
+    color: #6c757d;
+}
+
+/* Make sure cost price and lead time labels are compact */
+.supplier-details .form-label.small {
+    font-size: 0.8rem !important;
+    margin-bottom: 0.25rem;
+}
+
+.supplier-details .input-group-sm {
+    margin-bottom: 0.25rem;
+}
+
+/* Adjust spacing for edit page specifically */
+.supplier-item .col-md-4:not(:first-child) {
+    padding-top: 0.25rem;
+}
+
+
+/* Supplier list in product details */
+.suppliers-list-small {
+    max-height: 120px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.supplier-line-small {
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+}
+
+.supplier-line-small:hover {
+    background-color: rgba(255, 193, 7, 0.1);
+}
+
+.supplier-name-small {
+    flex: 1;
+    min-width: 0;
+}
+
+.supplier-name-small small {
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.supplier-details-small small {
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+.supplier-details-small .text-success {
+    font-weight: 500;
+}
+
+.supplier-details-small .text-info {
+    font-weight: 500;
+}
+
+/* Scrollbar styling */
+.suppliers-list-small::-webkit-scrollbar {
+    width: 4px;
+}
+
+.suppliers-list-small::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 2px;
+}
+
+.suppliers-list-small::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 2px;
+}
+
+.suppliers-list-small::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+}
+
+/* New show category products page - Task 06 */
+.btn-outline-indigo {
+    color: #6610f2;
+    border-color: #6610f2;
+}
+.btn-outline-indigo:hover {
+    background-color: #6610f2;
+    color: white;
+}
+.btn-teal {
+    background-color: #20c997;
+    color: white;
+}
+.btn-teal:hover {
+    background-color: #199d76;
+    color: white;
+}
+.bg-indigo {
+    background-color: #6610f2 !important;
+}
+
+/* Wide popover styles */
+.wide-popover {
+    max-width: 500px !important;
+    min-width: 350px !important;
+}
+
+.wide-popover .popover-body {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+.wide-popover .popover-body br {
+    display: block;
+    content: "";
+    margin-bottom: 3px;
+}
+
+.wide-popover .popover-body .popover-item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 5px;
+    padding: 2px 0;
+}
+
+/* Make sure each item stays on one line */
+.popover {
+    max-width: none !important;
+}
+
+.popover-body {
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+/* Specific style for wide popover items */
+.wide-popover .popover-body {
+    white-space: nowrap;
+    overflow-x: auto;
+}
+
+.supplier-helper-text {
+    font-size: 0.8rem;
+}

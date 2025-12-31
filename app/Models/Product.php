@@ -27,4 +27,15 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    // ! From Task 06: Create Many to Many Relationship between Products-Suppliers
+    /**
+     * Get the suppliers for the product.
+     */
+    public function suppliers()
+    {
+        return $this->belongsToMany(Supplier::class)
+                    ->withPivot(['cost_price', 'lead_time_days'])
+                    ->withTimestamps();
+    }
 }
