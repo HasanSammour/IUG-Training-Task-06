@@ -8,48 +8,50 @@
 </p>
 
 ## About Task Solution 
-# 🛒 Task 05 – Enhanced Product Management System with Categories & UI Improvements
+# 🛒 Task 06 – Enhanced Product Management System with Suppliers & Many-to-Many Relationships
 
 ## 📋 Project Overview
-This task significantly enhances the **Product Management System** by implementing a *complete category system* with proper database relationships, improved UI/UX, and advanced features. The system now includes a fully functional category-product relationship, dynamic views, and enhanced user experience while maintaining all *validation and CRUD functionality* from **Task 04 and Task 03**.
+This task significantly enhances the **Product Management System** by implementing a *complete many-to-many relationship* between Products and Suppliers with pivot data, advanced form handling, and improved data visualization. The system now includes supplier management, cost tracking, lead time management, and enhanced CRUD operations while maintaining all *validation and relationships* from **Task 05**.
 
 ---
 
 ## ✨ Major Enhancements & New Features
 
 ### 🗄️ **Database & Backend Improvements**
-- ✅ **Complete Category System** – New `categories` table with proper migrations
-- ✅ **Foreign Key Relationships** – `category_id` in products table with `onDelete('set null')` strategy
-- ✅ **Eloquent Relationships** – One-to-Many relationship between Category and Product
-- ✅ **Global View Sharing** – All categories available site-wide via `AppServiceProvider`
-- ✅ **Enhanced Controllers** – Eager loading, pagination, and category statistics
+- ✅ **Complete Supplier System** – New `suppliers` table with unique constraints
+- ✅ **Pivot Table with Additional Data** – `product_supplier` table with `cost_price` and `lead_time_days`
+- ✅ **Many-to-Many Relationships** – Products can have multiple suppliers, suppliers can supply multiple products
+- ✅ **Eloquent Relationships with Pivot Data** – Proper `withPivot()` and `withTimestamps()` configuration
+- ✅ **Composite Unique Constraint** – Prevents duplicate product-supplier combinations
+- ✅ **Enhanced Seeding** – SupplierSeeder and ProductSupplierSeeder with realistic pivot data
 
 ### 🎨 **UI/UX Enhancements**
-- ✅ **Dynamic Category Dropdowns** – Populated in create/edit forms
-- ✅ **Category Products Page** – Dedicated view showing all products in a category
-- ✅ **Pagination System** – Implemented across all listings
-- ✅ **Enhanced Product Display** – Better organization with category information
-- ✅ **Local Bootstrap Assets** – Self-hosted Bootstrap for better control
+- ✅ **Dynamic Supplier Selection** – Checkbox interface in create/edit forms
+- ✅ **Pivot Data Input Forms** – Cost price and lead time inputs for each supplier
+- ✅ **Enhanced Product Display** – Supplier information in all product views
+- ✅ **Supplier Statistics** – Count of suppliers per product in listings
+- ✅ **Responsive Tables** – Better organization with supplier information
 
-### 📊 **New Views & Pages**
-- ✅ **Category Products View** (`categories/products.blade.php`) – New dedicated page
-- ✅ **Enhanced Product Views** – All product views updated with category integration
-- ✅ **Better Layout Structure** – Organized Blade templates with consistent design
+### 📊 **New Views & Components**
+- ✅ **Updated Create/Edit Forms** – Supplier selection with pivot data inputs
+- ✅ **Enhanced Product Tables** – Supplier column with pivot data display
+- ✅ **Improved Show View** – Complete supplier information with pivot details
+- ✅ **Supplier Management** – Comprehensive supplier data handling
 
 ### 🔧 **Technical Improvements**
-- ✅ **Database Seeding** – 8 default categories + test empty category *This one created using tinker*
-- ✅ **Factory Updates** – Products now associated with random categories and more
-- ✅ **Custom JavaScript** – Delete confirmation modals with proper UX
-- ✅ **Custom CSS** – Local styling for better performance
+- ✅ **Form Request Validation** – Enhanced validation for suppliers and pivot data
+- ✅ **Controller Synchronization** – Efficient `sync()` method for many-to-many relationships
+- ✅ **Eager Loading Optimization** – N+1 problem prevention with `with()` and `withCount()`
+- ✅ **Database Integrity** – Proper foreign key constraints and cascade deletion
 
 ---
 
 ## 🛠️ Technologies Used
 
 - **Laravel 12** – PHP framework with Eloquent ORM
-- **MySQL** – Relational database with foreign keys
+- **MySQL** – Relational database with foreign keys and pivot tables
 - **Bootstrap 5** (Local) – Frontend framework hosted locally
-- **JavaScript (Vanilla)** – Custom interactive features
+- **JavaScript (Vanilla)** – Dynamic form interactions
 - **HTML5 & CSS3** – Modern markup and styling
 - **FontAwesome** – Icon library for better visuals
 
@@ -61,128 +63,111 @@ This task significantly enhances the **Product Management System** by implementi
 app/
 ├── Http/
 │   ├── Controllers/
-│   │   └── ProductController.php        # Enhanced with category features
+│   │   └── ProductController.php        # Enhanced with supplier sync logic
 │   ├── Requests/
-│   │   ├── StoreProductRequest.php      # Enhanced with Category Validation Rules
-│   │   └── UpdateProductRequest.php     # Enhanced with Category Validation Rules
-│   └── Providers/
-│       └── AppServiceProvider.php       # Global category sharing
+│   │   ├── StoreProductRequest.php      # Enhanced with supplier validation
+│   │   └── UpdateProductRequest.php     # Enhanced with supplier validation
 ├── Models/
-│   ├── Product.php                      # Added category relationship
-│   └── Category.php                     # New model with product relationship
+│   ├── Product.php                      # Added suppliers relationship
+│   ├── Category.php                     # Unchanged from Task 05
+│   └── Supplier.php                     # NEW: Supplier model with products relationship
 database/
 ├── migrations/
-│   ├── 2024_xx_xx_xxxxxx_create_categories_table.php
-│   └── 2024_xx_xx_xxxxxx_create_products_table.php      # Updated with foreign key
+│   ├── 2025_xx_xx_xxxxxx_create_suppliers_table.php          # NEW: Suppliers table
+│   ├── 2025_xx_xx_xxxxxx_create_product_supplier_table.php   # NEW: Pivot table
 ├── seeders/
-│   ├── DatabaseSeeder.php               # Updated to seed categories first
-│   ├── ProductSeeder.php               # Updated to seed With Random Categories and more
-│   └── CategorySeeder.php               # New: Seeds 8 default categories
+│   ├── DatabaseSeeder.php               # Updated to include supplier seeding
+│   ├── ProductSeeder.php                # Enhanced product seeding
+│   ├── CategorySeeder.php               # From Task 05
+│   ├── SupplierSeeder.php               # NEW: Seeds 8 suppliers
+│   └── ProductSupplierSeeder.php        # NEW: Attaches suppliers to products
 └── factories/
-    └── ProductFactory.php               # Updated to use categories
+    └── ProductFactory.php               # From Task 05
 
 resources/views/
 ├── categories/
-│   └── products.blade.php               # NEW: Category products listing
+│   └── products.blade.php               # Enhanced with suppliers column
+├── layout/
+│   └── app.blade.php                    # Enhanced with new button for suppliers
 └── products/
-    ├── index.blade.php                  # Enhanced with pagination & categories
-    ├── create.blade.php                 # Enhanced with category dropdown And show available categories Table
-    ├── edit.blade.php                   # Enhanced with category selection
-    └── show.blade.php                   # Enhanced with category info
+    ├── index.blade.php                  # Enhanced with suppliers column
+    ├── create.blade.php                 # Enhanced with supplier selection
+    ├── edit.blade.php                   # Enhanced with supplier editing
+    └── show.blade.php                   # Enhanced with supplier details
 
 public/
-├── bootstrap/                           # Local Bootstrap assets
-├── css/                                 # Custom CSS files
-└── js/                                  # Custom JavaScript files
+├── bootstrap/                               # Local Bootstrap assets
+    ├── css/                                 # Bootstrap & Custom CSS files
+    └── js/                                  # Bootstrap & Custom JavaScript files
+
 ```
 
 ---
 
 ## 🔗 Database Schema & Relationships
 
-### **Categories Table**
+### **Suppliers Table (NEW)**
 ```sql
-CREATE TABLE categories (
+CREATE TABLE suppliers (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) UNIQUE NOT NULL,  -- Unique category names
+    name VARCHAR(255) UNIQUE NOT NULL,      -- Unique supplier names
+    email VARCHAR(255) UNIQUE NOT NULL,     -- Unique supplier emails
     created_at TIMESTAMP NULL,
     updated_at TIMESTAMP NULL
 );
 ```
 
-### **Products Table (Updated)**
+### **Product_Supplier Pivot Table (NEW)**
 ```sql
-CREATE TABLE products (
+CREATE TABLE product_supplier (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) UNIQUE NOT NULL,  -- From Task 04
-    price DECIMAL(10,2) NOT NULL CHECK (price > 0),  -- From Task 04
-    description TEXT NULL,
-    category_id BIGINT UNSIGNED NULL,  -- NEW: Foreign key to categories
+    product_id BIGINT UNSIGNED NOT NULL,
+    supplier_id BIGINT UNSIGNED NOT NULL,
+    cost_price DECIMAL(10,2) NOT NULL CHECK (cost_price >= 0),
+    lead_time_days INTEGER NOT NULL CHECK (lead_time_days >= 0),
     created_at TIMESTAMP NULL,
     updated_at TIMESTAMP NULL,
-    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+    FOREIGN KEY (supplier_id) REFERENCES suppliers(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_product_supplier (product_id, supplier_id)  -- Composite unique constraint
 );
 ```
 
 ### **Eloquent Relationships**
 
-**Category Model:**
-```php
-class Category extends Model
-{
-    public function products()
-    {
-        return $this->hasMany(Product::class);
-    }
-}
-```
-
 **Product Model:**
 ```php
 class Product extends Model
 {
+    // From Task 05
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
+    
+    // NEW for Task 06: Many-to-Many with pivot data
+    public function suppliers()
+    {
+        return $this->belongsToMany(Supplier::class)
+                    ->withPivot(['cost_price', 'lead_time_days'])
+                    ->withTimestamps();
+    }
 }
 ```
 
----
-
-## 🎯 Key Implementation Details
-
-### 1. **Global Category Sharing (AppServiceProvider)**
+**Supplier Model (NEW):**
 ```php
-public function boot(): void
+class Supplier extends Model
 {
-    // Share categories with all views
-    view()->composer('*', function ($view) {
-        $allCategories = Category::withCount('products')
-            ->orderBy('name')
-            ->get();
-        
-        $view->with('allCategories', $allCategories);
-    });
+    // Many-to-Many with pivot data
+    public function products()
+    {
+        return $this->belongsToMany(Product::class)
+                    ->withPivot(['cost_price', 'lead_time_days'])
+                    ->withTimestamps();
+    }
 }
 ```
-**Why this matters:** Ensures categories are available in every view, including dropdowns in create/edit forms, even when using pagination in controllers *{I add this because i create table shows categories in Create Product View}*.
-
-### 2. **Enhanced ProductController Methods**
-1. Create Method with Pagination 
-2. Category Products View
-
-
-### 3. **Database Migration Strategy**
-1. **Categories Migration** created first (earlier timestamp)
-2. **Products Migration** updated with foreign key constraint
-3. **Proper `onDelete('set null')`** strategy maintains data integrity
-
-### 4. **Seeding Strategy**
-1. **CategorySeeder** creates 8 default categories:
-   - Electronics, Fashion, Home & Garden, Books, Sports, Health & Beauty, Toys, Automotive
-2. **ProductSeeder** uses factories to create products with random categories
-3. **Test Empty Category** created via Tinker for demonstration
 
 ---
 
@@ -190,8 +175,8 @@ public function boot(): void
 
 ```bash
 # 1. Clone and navigate to project
-git clone https://github.com/HasanSammour/IUG-Training-Task-05.git
-cd IUG-Training-Task-05
+git clone https://github.com/HasanSammour/IUG-Training-Task-06.git
+cd IUG-Training-Task-06
 
 # 2. Install dependencies
 composer install
@@ -204,7 +189,7 @@ php artisan key:generate
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=task05
+DB_DATABASE=task06
 DB_USERNAME=root
 DB_PASSWORD=
 
@@ -214,11 +199,7 @@ php artisan migrate
 # 6. Seed the database
 php artisan db:seed
 
-# 7. (Optional) Create test empty category via Tinker
-php artisan tinker
->>> Category::create(['name' => 'Test Empty Category']);
-
-# 8. Start development server
+# 7. Start development server
 php artisan serve
 ```
 
@@ -226,133 +207,80 @@ php artisan serve
 
 ## 🌐 Application Routes
 
-### **Product Routes (From Task 04, Enhanced)**
+### **Enhanced Product Routes**
 ```php
 Route::resource('products', ProductController::class);
-```
-
-### **New Category Routes (Task 05)**
-```php
-// Show all products in a specific category
-Route::get('/categories/{category}/products', 
-            [ProductController::class, 'showCategoryProducts'])
-      ->name('categories.products.show');
 ```
 
 ### **Complete Route List**
 | Method | URI | Action | Description |
 |--------|-----|--------|-------------|
-| GET | `/products` | `index()` | List all products with pagination |
-| GET | `/products/create` | `create()` | Show create form with category dropdown |
-| POST | `/products` | `store()` | Store new product with validation |
-| GET | `/products/{product}` | `show()` | Show single product with category |
-| GET | `/products/{product}/edit` | `edit()` | Edit form with category selection |
-| PUT/PATCH | `/products/{product}` | `update()` | Update product with validation |
-| DELETE | `/products/{product}` | `destroy()` | Delete product with confirmation |
-| GET | `/categories/{category}/products` | `showCategoryProducts()` | **NEW**: Show category products |
-
----
-
-## 🎨 Frontend Features
-
-### **1. Local Asset Management**
-- Bootstrap CSS/JS hosted locally in `public/bootstrap/`
-- Custom CSS in `public/bootstrap/css/`
-- Custom JavaScript in `public/bootstrap/js/`
-- FontAwesome hosted locally in `public/font-awesome/` for icons
-- images used are hosted in `public/images/`
-
-### **2. Interactive Components**
-- **Delete Confirmation Modals** – Custom JavaScript for safe deletions
-- **Pagination Components** – Bootstrap-styled pagination links
-- **Dynamic Dropdowns** – Category selection in forms
-
-### **3. Layout Improvements**
-- **Consistent Header/Footer** – Using `layouts/app.blade.php`
-- **Breadcrumb Navigation** – Shows user location
-- **Alert Messages** – Success/error notifications
-- **Loading States** – Better user feedback
-
----
-
-## 🔍 Testing Features
-
-### **1. Category Functionality**
-- Visit `/categories/{id}/products` → ✅ See all products in that category
-- Create product without category → ✅ Works (nullable foreign key)
-- Delete category with products → ✅ Products remain (category_id set to null)
-- Try duplicate category name {Using tinker} → ❌ Database unique constraint prevents
-
-### **2. Product Management**
-- Create product with category → ✅ Successfully associated
-- Edit product category → ✅ Can change category association
-- View product details → ✅ Shows category information
-- List all products → ✅ Shows category in table
-
-### **3. Pagination Testing**
-- Add more than 10 products → ✅ Pagination appears
-- Navigate between pages → ✅ URL updates correctly
-- Combined with category filter → ✅ Works seamlessly
-
-### **4. Database Integrity**
-- Delete category → ✅ Products remain (category_id = null)
-- Try invalid category_id → ❌ Foreign key constraint prevents
-- Duplicate product names → ❌ Unique constraint prevents (from Task 04)
-
----
-
-## 🔧 Custom Code Highlights
-
-### **Migration Foreign Key**
-```php
-// database/migrations/xxxx_create_products_table.php
-$table->foreignId('category_id')
-      ->nullable()
-      ->constrained('categories')
-      ->onDelete('set null');
-```
-
-### **Controller Eager Loading**
-```php
-// Efficient data loading
-$products = Product::with('category')->latest()->paginate(10);
-```
+| GET | `/products` | `index()` | List all products with suppliers & pagination |
+| GET | `/products/create` | `create()` | Show create form with supplier selection |
+| POST | `/products` | `store()` | Store new product with suppliers & pivot data |
+| GET | `/products/{product}` | `show()` | Show product with all supplier details |
+| GET | `/products/{product}/edit` | `edit()` | Edit form with supplier pre-selection |
+| PUT/PATCH | `/products/{product}` | `update()` | Update product and supplier relationships |
+| DELETE | `/products/{product}` | `destroy()` | Delete product with cascade to pivot |
 
 ---
 
 ## 📊 Database Seeding Details
 
-### **Default Categories Created:**
-1. Electronics (🖥️)
-2. Fashion (👕)
-3. Home & Garden (🏠)
-4. Books (📚)
-5. Sports (⚽)
-6. Health & Beauty (💆)
-7. Toys (🎮)
-8. Automotive (🚗)
-
-### **Product Factory:**
+### **Default Suppliers Created:**
 ```php
-public function definition()
-{
-  $categoryName = $this->faker->randomElement(array_keys($this->productCategories));
-  $category = Category::where('name', $categoryName)->first();
-        
-  return [
-    'name' => $this->faker->unique()->words(rand(2, 4), true),
-    'price' => $this->faker->randomFloat(2, 5, 2000),
-    'description' => $this->faker->paragraph(rand(1, 3)),
-    'category_id' => $category ? $category->id : null
-  ];
-}
+// SupplierSeeder creates:
+[
+    ['name' => 'Tech Suppliers Inc.', 'email' => 'orders@techsuppliers.com'],
+    ['name' => 'Global Fashion Distributors', 'email' => 'contact@globalfashion.com'],
+    ['name' => 'Home Essentials Ltd.', 'email' => 'sales@homeessentials.com'],
+    ['name' => 'Book World Publishers', 'email' => 'orders@bookworld.com'],
+    ['name' => 'Sports Gear International', 'email' => 'info@sportsgear.com'],
+    ['name' => 'Health & Beauty Co.', 'email' => 'supply@healthbeauty.com'],
+    ['name' => 'Toy Masters Ltd.', 'email' => 'orders@toymasters.com'],
+    ['name' => 'Auto Parts Express', 'email' => 'contact@autopartsexpress.com'],
+]
 ```
+
+### **ProductSupplierSeeder:**
+```php
+
+// Attaches 1-3 random suppliers to each product with realistic pivot data
+// See file for details //
+
+```
+
+---
+
+## 🔍 Testing Features
+
+### **1. Supplier Management**
+- Create product with multiple suppliers → ✅ All suppliers attached with pivot data
+- Edit product to add/remove suppliers → ✅ Pivot data updated correctly
+- Try duplicate product-supplier combination → ❌ Composite unique constraint prevents
+- Delete product → ✅ Associated pivot records cascade deleted
+
+### **2. Pivot Data Validation**
+- Enter negative cost price → ❌ Validation prevents submission
+- Enter non-integer lead time → ❌ Validation prevents submission
+- Select supplier without entering pivot data → ❌ Required validation triggers
+- Enter valid pivot data → ✅ Successfully saved
+
+### **3. Performance Testing**
+- List 100+ products → ✅ Eager loading prevents N+1 queries
+- Display supplier count → ✅ Efficient query with `withCount()`
+- Edit product with many suppliers → ✅ Efficient relationship loading
+
+### **4. Database Integrity**
+- Delete supplier with products → ✅ Cascade deletion from pivot table
+- Try non-existent supplier ID → ❌ Foreign key constraint prevents
+- Data consistency → ✅ All pivot data maintained across operations
 
 ---
 
 ## 🚀 Deployment Considerations
 
-### **Production Optimizations:**
+### **Performance Optimizations:**
 ```bash
 # Cache configurations
 php artisan config:cache
@@ -361,19 +289,15 @@ php artisan view:cache
 
 # Optimize autoloader
 composer dump-autoload -o
+
 ```
 
 ### **Security Measures:**
-- CSRF protection enabled on all forms
+- CSRF protection on all forms
+- Mass assignment protection via `$fillable`
+- Input validation for all user data
 - SQL injection prevention via Eloquent
 - XSS protection via Blade templating
-- Input validation via Form Requests (from Task 04)
-
-### **Performance Tips:**
-- Eager loading prevents N+1 queries
-- Database indexes on foreign keys
-- Pagination for large datasets
-- Local assets for faster loading
 
 ---
 
@@ -381,10 +305,11 @@ composer dump-autoload -o
 
 | Task | Description | Repository |
 |------|-------------|------------|
-| **Task 03 – Part 1** |  Basic Database Operations: Model, Migration, and Seeder | [![GitHub](https://img.shields.io/badge/GitHub-Task_03_Part_1-blue)](https://github.com/HasanSammour/IUG-Training-Task-03) |
-| **Task 03 – Part 2** | Product CRUD Operations in Laravel | [![GitHub](https://img.shields.io/badge/GitHub-Task_03_Part_2-blue)](https://github.com/HasanSammour/IUG-Training-Task-03_Part02) |
+| **Task 03 – Part 1** | Basic Database Operations | [![GitHub](https://img.shields.io/badge/GitHub-Task_03_Part_1-blue)](https://github.com/HasanSammour/IUG-Training-Task-03) |
+| **Task 03 – Part 2** | Product CRUD Operations | [![GitHub](https://img.shields.io/badge/GitHub-Task_03_Part_2-blue)](https://github.com/HasanSammour/IUG-Training-Task-03_Part02) |
 | **Task 04** | Form Validation & Database Integrity | [![GitHub](https://img.shields.io/badge/GitHub-Task_04-green)](https://github.com/HasanSammour/IUG-Training-Task-04) |
-| **Task 05** | Category System & Enhanced UI (Current) | [![GitHub](https://img.shields.io/badge/GitHub-Task_05-orange)](https://github.com/HasanSammour/IUG-Training-Task-05) |
+| **Task 05** | Category System & Enhanced UI | [![GitHub](https://img.shields.io/badge/GitHub-Task_05-orange)](https://github.com/HasanSammour/IUG-Training-Task-05) |
+| **Task 06** | Many-to-Many Relationships (Current) | [![GitHub](https://img.shields.io/badge/GitHub-Task_06-purple)](https://github.com/HasanSammour/IUG-Training-Task-06) |
 
 ---
 
@@ -404,7 +329,28 @@ Back-end Development with Laravel
 
 ---
 
-⭐ **If this project helped you understand Laravel relationships and MVC architecture, please give it a star!**
+## 🎯 Learning Outcomes
+
+### **Technical Skills Developed:**
+- ✅ Many-to-Many relationship implementation
+- ✅ Pivot tables with additional data
+- ✅ Form handling for complex relationships
+- ✅ Database constraints and integrity
+- ✅ Eager loading optimization
+- ✅ Form request validation
+- ✅ Controller synchronization methods
+
+### **Best Practices Implemented:**
+- ✅ N+1 query prevention
+- ✅ Database normalization
+- ✅ Composite unique constraints
+- ✅ Cascade deletion strategies
+- ✅ Form data persistence
+- ✅ Client-server validation consistency
+
+---
+
+⭐ **If this project helped you understand Laravel many-to-many relationships and pivot tables, please give it a star!**
 
 ---
 
